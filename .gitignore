@@ -1,0 +1,5 @@
+*.opp
+main
+*test*
+.vscode
+*.dSYM

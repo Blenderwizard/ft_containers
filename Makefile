@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/04/28 13:18:46 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/05/03 15:15:21 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,29 +40,37 @@ _ICYAN			= \x1b[46m
 _IWHITE			= \x1b[47m
 
 # Color reset
-_COLOR_RESET	= \x1b[0m
+_COLOR_RESET	= \033[0m
+
+# Folders
+INCLUDES = includes
+SRC_DIR = src
+OUTS = objs
 
 # Source Files
 SRC = main.cpp
+SRC_PLUS_PATH = $(addprefix $(SRC_DIR)/, $(SRC))
 
 # Output Files
-OUT = $(patsubst %.cpp,%.opp,$(SRC))
+OUT = $(subst $(SRC_DIR)/, $(OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
 
-NAME = main
+NAME = container
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=adress
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address
 
 all : $(NAME)
 
-$(NAME): $(OUT)
-	@echo "$(_PURPLE)Compiling $(NAME)$(_COLOR_RESET)"
-	@$(CC) $(CFLAGS) $(OUT) -o $(NAME)
+$(NAME):  $(OUT)
+	@echo "$(_PURPLE)Linking $(NAME)$(_COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(OUT) -o $(NAME) -I./$(INCLUDES)
 	@echo "$(_GREEN)DONE$(_COLOR_RESET)"
 
-$(OUT): %.opp: %.cpp
-	@echo "$(_BLUE)Compiling $(basename $(notdir $<))$(_COLOR_RESET)"
-	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OUT): $(OUTS)/%.opp : $(SRC_DIR)/%.cpp
+	@echo "$(_CYAN)Compiling $(basename $(notdir $*.opp)) $(_COLOR_RESET)"
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) -c $< -o $@ -I./$(INCLUDES)
 
 re: fclean $(NAME)
 
@@ -72,6 +80,6 @@ fclean: clean
 
 clean:
 	@echo "$(_RED)Cleaning object files$(_COLOR_RESET)"
-	@rm -rf $(OUT)
+	@rm -rf $(OUTS)
 	
 .PHONY: clean fclean re all

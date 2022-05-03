@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft.hpp                                             :+:      :+:    :+:   */
+/*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/02 13:23:37 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/02 13:27:20 by jrathelo         ###   ########.fr       */
+/*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
+/*   Updated: 2022/05/03 14:55:19 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#ifndef VECTOR_HPP
+# define VECTOR_HPP
 
 namespace ft {
-	class vector;
-	class stack;
-	class map;
+	template <class T> class vector {
+		
+	};
 }
 
-#include "vector.hpp"
-#include "stack.hpp"
-#include "map.hpp"
+#endif

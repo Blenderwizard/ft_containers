@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 16:07:10 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/06 12:37:35 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/05/06 13:38:45 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 namespace ft {
 	template<class T1, class T2> struct pair {
 		public:
-			typedef first_type	T1;
-			typedef second_type	T2;
+			typedef typename T1	first_type;
+			typedef typename T2	second_type;
 
 			T1	first;
 			T2	second;

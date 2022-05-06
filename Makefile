@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/05/03 15:15:21 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/05/05 14:28:20 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,7 +72,8 @@ $(OUT): $(OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -c $< -o $@ -I./$(INCLUDES)
 
-re: fclean $(NAME)
+re: fclean
+	make $(NAME)
 
 fclean: clean
 	@echo "$(_RED)Cleaning output files$(_COLOR_RESET)"

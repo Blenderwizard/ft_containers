@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/05 15:56:46 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/05/06 12:39:51 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <iterator>
 
 namespace ft {
-	template <class T, class Allocator = std::allocator<T> > class vector<T, Alloc> {
+	template <class T, class Alloc = std::allocator<T> > class vector<T, Alloc> {
 		private:
 			T array[];
 		public:

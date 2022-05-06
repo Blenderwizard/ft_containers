@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:45:42 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/06 14:12:52 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/05/06 15:58:02 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,19 @@ namespace ft{
 			typedef ft::iterator_traits<Iter>::pointer				pointer;
 			typedef	ft::iterator_traits<Iter>::reference			reference;
 
-			reverse_iterator();
-			explicit reverse_iterator(iterator_type x);
-			template<class U> reverse_iterator(const reverse_iterator<U> & other);
-			template<clase U> reverse_iterator & operator=(const reverse_iterator<U> & other);
-			iterator_type base() const;
+			reverse_iterator(): current() { };
+			explicit reverse_iterator(iterator_type x): current(x) { };
+			template<class U> reverse_iterator(const reverse_iterator<U> & other) : current(other.current);
+
+			template<clase U> reverse_iterator & operator=(const reverse_iterator<U> & other) {
+				current = other.current;
+				return (*this);
+			};
+
+			iterator_type base() const {
+				return (current);
+			};
+
 			reference operator*() const;
 			pointer	operator->() const;
 			auto operator[](difference_type n) const;
@@ -41,7 +49,7 @@ namespace ft{
 			reverse_iterator operator-(difference_type n) const;
 			reverse_iterator & operator+=(difference_type n);
 			reverse_iterator & operator-=(difference_type n);
-		private:
+		protected:
 			iterator_type	current;
 	};
 

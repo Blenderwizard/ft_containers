@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 16:07:10 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/06 12:29:13 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/05/06 12:37:35 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,10 @@ namespace ft {
 
 	template<class T1, class T2> inline bool operator>=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return !(p1 < p2);
+	}
+
+	template<class T1, class T2> pair<T1,T2> make_pair(T1 t, T2 u) {
+		return (pair<T1, T2>(t, u));
 	}
 	
 }

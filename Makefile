@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/05/05 14:28:20 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/05/09 14:39:18 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ _IWHITE			= \x1b[47m
 _COLOR_RESET	= \033[0m
 
 # Folders
-INCLUDES = includes
+INCLUDES = -I./includes/container -I./includes/other
 SRC_DIR = src
 OUTS = objs
 
@@ -63,14 +63,14 @@ all : $(NAME)
 
 $(NAME):  $(OUT)
 	@echo "$(_PURPLE)Linking $(NAME)$(_COLOR_RESET)"
-	@$(CC) $(CFLAGS) $(OUT) -o $(NAME) -I./$(INCLUDES)
+	@$(CC) $(CFLAGS) $(OUT) -o $(NAME) $(INCLUDES)
 	@echo "$(_GREEN)DONE$(_COLOR_RESET)"
 
 
 $(OUT): $(OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@echo "$(_CYAN)Compiling $(basename $(notdir $*.opp)) $(_COLOR_RESET)"
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -c $< -o $@ -I./$(INCLUDES)
+	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
 re: fclean
 	make $(NAME)

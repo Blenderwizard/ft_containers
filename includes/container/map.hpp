@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/09 15:21:28 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/05/10 10:52:53 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,7 @@
 #include <iterator>
 
 namespace ft {
-	template <
-		class Key,
-		class T,
-		class Compare = std::less<Key>,
-		class Allocator = std::allocator< ft::pair<const Key, T> >
-	> class map {
+	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator< ft::pair<const Key, T> > > class map {
 		public:
 			typedef Key																					key_type;
 			typedef T																					mapped_type;
@@ -57,10 +52,10 @@ namespace ft {
 					}
 				protected:
 					Compare c;
-					value_compare( Compare c): c(c) { };
+					value_compare(Compare c): c(c) { };
 			};
 			
-			map();
+			inline map();
 			explicit map(const Compare & comp, const Allocator & alloc = Allocator());
 			template<class InputIt> map(InputIt first, InputIt last, const Compare & comp, const Allocator & alloc = Allocator());
 			map(const map & other);

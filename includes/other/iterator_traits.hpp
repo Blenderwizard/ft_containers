@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:45:23 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/09 14:43:16 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/05/10 10:50:38 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,12 @@ namespace ft {
 		typedef Iter&								reference;
 		typedef typename Iter::iterator_category	iterator_category;
 	};
-
-	template<class T> struct iterator_traits<const T*> {
-
+	template<class Iter> struct iterator_traits<const Iter*> {
+		typedef typename Iter::difference_type		difference_type;
+		typedef typename Iter::value_type			value_type;
+		typedef const Iter*							pointer;
+		typedef const Iter&							reference;
+		typedef typename Iter::iterator_category	iterator_category;
 	};
 };
 

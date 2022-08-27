@@ -15,7 +15,7 @@
 
 #include <iterator_traits.hpp>
 
-namespace ft{
+namespace ft {
 	template<class Iter> class reverse_iterator {
 		public:
 			typedef Iter													iterator_type;

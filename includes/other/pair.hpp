@@ -23,6 +23,7 @@ namespace ft {
 			T2	second;
 
 			inline pair(): first(), second() { }
+
 			inline pair(const T1 & x, const T2 & y) {
 				this->first = x;
 				this->second = y;

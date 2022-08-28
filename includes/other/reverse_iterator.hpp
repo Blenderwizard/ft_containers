@@ -45,11 +45,9 @@ namespace ft {
 				return *--tmp;
 			}
 
-			inline pointer	operator->() const;
-			
-			// inline auto operator[](difference_type n) const {
-			// 	return *(*this + n);
-			// }
+			inline pointer	operator->() const {
+				return &(operator*());
+			}
 
 			inline reverse_iterator & operator++() {
 				current--;

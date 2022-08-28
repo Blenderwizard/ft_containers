@@ -73,7 +73,7 @@ $(OUT): $(OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
 re: fclean
-	make $(NAME)
+	@make $(NAME)
 
 fclean: clean
 	@echo "$(_RED)Cleaning output files$(_COLOR_RESET)"

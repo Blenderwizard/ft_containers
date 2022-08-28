@@ -16,8 +16,12 @@
 #include <memory>
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
+
+#include <enable_if.hpp>
 #include <iterator.hpp>
 #include <reverse_iterator.hpp>
+#include <is_integral.hpp>
 
 namespace ft {
 	template<class T, class Allocator = std::allocator<T> > class vector {
@@ -34,30 +38,31 @@ namespace ft {
 			typedef typename allocator_type::size_type       					size_type;
 			typedef typename allocator_type::pointer							pointer;
 
-			explicit vector(const Allocator & alloc = allocator_type()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
+			explicit vector(const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
 			
-			explicit vector(size_type count, const T& value, const Allocator& alloc = allocator_type()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
-				this->first = this->_alloc.allocate(count);
+			explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
+				this->first = _alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;
 				for(; count > 0; count--) {
-					alloc.construct(this->last, value);
+					_alloc.construct(this->last, value);
 					(this->last)++;
 				}
 			}
 
-			template<class InputIt> vector(InputIt first, InputIt last, const Allocator& alloc = Allocator()) : _alloc(alloc) {
-				bool is_valid;
-				// if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIt>::iterator_category >::value))
-				// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIt>::iterator_category >::type>());
-				difference_type count = distance(this->first, this->last);
-				this->first = _alloc.allocate( count );
+			template<class InputIt> vector(
+					InputIt first, 
+					InputIt last, 
+					const Allocator& alloc = Allocator(), 
+					typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0
+				) : _alloc(alloc) {
+				difference_type count = dist(first, last);
+				this->first = _alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;
-				while (count){
-					_alloc.construct(this->last, *(this->first)++);
+				for (; count > 0; count--) {
+					_alloc.construct(this->last, *(first)++);
 					(this->last)++;
-					count--;
 				}
 			}
 
@@ -84,20 +89,18 @@ namespace ft {
 				if (count == 0)
 					return ;
 				if (size_type(this->vector_size - this->first) >= count ) {
-					while (count) {
+					for (; count > 0; count--) {
 						_alloc.construct(this->last , value);
 						(this->last)++;
-						count--;
 					}
 				} else {
 					_alloc.deallocate(this->first, this->capacity());
 					this->first = _alloc.allocate(count);
 					this->last = this->first;
 					this->vector_size = this->first + count;
-					while (count) {
+					for (; count > 0; count--) {
 						_alloc.construct(this->last, value);
 						(this->last)++;
-						count--;
 					}
 				}
 			}
@@ -212,10 +215,9 @@ namespace ft {
 					this->first = _alloc.allocate(new_cap);
 					this->vector_size = this->first + new_cap;
 					this->last = this->first;
-					while (prev_start != prev_end) {
+					for (;prev_start != prev_end; prev_start++) {
 						_alloc.construct(this->last, *prev_start);
 						(this->last)++;
-						prev_start++;
 					}
 					_alloc.deallocate(prev_start - prev_size, prev_cap);
 				}
@@ -262,23 +264,22 @@ namespace ft {
 			void resize(size_type count, T value = T());
 
 			void swap(vector& other) {
-				if (other == *this)
-					return;
-				
-				pointer save_start = other.first;
-				pointer save_end = other.last;
-				pointer save_end_capacity = other.vector_size;
-				allocator_type save_alloc = other._alloc;
+				if (other != *this) {
+					pointer save_start = other.first;
+					pointer save_end = other.last;
+					pointer save_end_capacity = other.vector_size;
+					allocator_type save_alloc = other._alloc;
 
-				other.first = this->first;
-				other.last = this->last;
-				other.vector_size = this->vector_size;
-				other._alloc = this->_alloc;
+					other.first = this->first;
+					other.last = this->last;
+					other.vector_size = this->vector_size;
+					other._alloc = this->_alloc;
 
-				this->first = save_start;
-				this->last = save_end;
-				this->vector_size = save_end_capacity;
-				this->_alloc = save_alloc;
+					this->first = save_start;
+					this->last = save_end;
+					this->vector_size = save_end_capacity;
+					this->_alloc = save_alloc;
+				}
 			}
 		private:
 			allocator_type	_alloc;
@@ -286,14 +287,12 @@ namespace ft {
 			pointer			last;
 			pointer			vector_size;
 
-			template<class IT> typename ft::iterator_traits<IT>::difference_type distance (IT first, IT last){
-				typename ft::iterator_traits<IT>::difference_type ret = 0;
-
-				while (first != last) {
-					first++;
-					ret++;
+			template<class InputIt> typename ft::iterator_traits<InputIt>::difference_type dist (InputIt first, InputIt last) {
+				typename ft::iterator_traits<InputIt>::difference_type rtn = 0;
+				for (; first != last; first++) {
+					rtn++;
 				}
-				return (ret);
+			return (rtn);
 			}
 	};
 }

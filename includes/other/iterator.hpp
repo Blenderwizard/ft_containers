@@ -66,14 +66,22 @@ namespace ft {
 				return (*this);
 			}
 
-			random_access_iterator operator++(int) {}
+			random_access_iterator operator++(int) {
+				random_access_iterator ret(*this);
+				operator++();
+				return (ret);
+			}
 
 			random_access_iterator & operator--() {
 				this->current--;
 				return (*this);
 			}
 
-			random_access_iterator operator--(int) {}
+			random_access_iterator operator--(int) {
+				random_access_iterator ret(*this);
+				operator--();
+				return (ret);
+			}
 
 			random_access_iterator operator+(difference_type count) const {
 				return (this->current + count);
@@ -161,6 +169,15 @@ namespace ft {
 	template<typename T_RAI1, typename T_RAI2> typename ft::random_access_iterator<T_RAI1>::difference_type operator-(const ft::random_access_iterator<T_RAI1> rai1, const ft::random_access_iterator<T_RAI2> rai2) {
 		return (rai1.base() - rai2.base());
 	}
+
+
+    template <bool is_valid, typename T> struct valid_tag {
+		typedef T type;
+		const static bool value = is_valid;
+	};
+
+	template <typename T> struct check_iterator_tagged_ft : public valid_tag<false, T> { };
+	template <> struct check_iterator_tagged_ft<ft::random_access_iterator_tag> : public valid_tag<true, ft::random_access_iterator_tag> { };
 }
 
 #endif

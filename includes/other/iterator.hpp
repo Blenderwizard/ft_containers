@@ -166,7 +166,160 @@ namespace ft {
 		return (rai1.base() - rai2.base());
 	}
 
-    template <bool is_valid, typename T> struct valid_tag {
+	template<class T> struct Node{
+		public:
+			explicit Node(T *srcval = 0) :	value(srcval), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
+	
+			Node( Node const & other) {
+				this->is_black = other.is_black;
+				this->value = other.value;
+				this->parent = other.parent;
+				this->is_nil = other.is_nil;
+				this->right = other.right;
+				this->left = other.left;
+			};
+
+			Node& operator=(const Node& other) {
+				this->is_black = other.is_black;
+				this->value = other.value;
+				this->is_nil = other.is_nil;
+				this->parent = other.parent;
+				this->right = other.right;
+				this->left = other.left;
+				return *this;
+			}
+
+			virtual ~Node(){}
+		private:
+			T	*value;
+			Node*	parent;
+			Node*	left;
+			Node*	right;	
+			bool	is_black;
+			bool	is_nil;
+	};
+
+	template<typename T> class RBTreeIter {
+		public:
+			typedef std::bidirectional_iterator_tag iterator_category;
+			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
+			typedef typename ft::iterator_traits<T*>::reference 		reference;
+			typedef typename ft::iterator_traits<T*>::pointer			pointer;
+			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+			typedef Node<typename ft::remove_const<value_type>::type >* node_pointer;
+
+			RBTreeIter() {}
+
+			RBTreeIter(void *node): _node(static_cast<node_pointer>(node)) {}
+
+			RBTreeIter(const RBTreeIter<typename ft::remove_const<value_type>::type > & other) {
+				*this = other;
+			}
+
+			RBTreeIter& operator=(const RBTreeIter<typename ft::remove_const<value_type>::type>& other) {
+				this->_node = other.node();
+				return *this;
+			}
+
+			reference operator*() const {
+				return *(_node->value);
+			}
+
+			pointer operator->() const {
+				return _node->value;
+			}
+
+			RBTreeIter& operator++() {
+				if (_node->right && !_node->right->is_nil) {
+					_node = tree_min(_node->right);
+				}
+				else {
+					node_pointer y = _node->parent;
+					while (y != NULL && _node == y->right) {
+						_node = y;
+						y = y->parent;
+					}
+					_node = y;
+				}
+				return *this;
+			}
+
+			RBTreeIter operator++(int) {
+				RBTreeIter<value_type> temp = *this;
+				if (!_node->right->is_nil) {
+					_node = tree_min(_node->right);
+				}
+				else {
+					node_pointer y = _node->parent;
+					while (y != NULL && _node == y->right) {
+						_node = y;
+						y = y->parent;
+					}
+					_node = y;
+				}
+				return temp;
+			}
+
+			RBTreeIter& operator--() {
+				if (_node->left && !_node->left->is_nil) {
+					_node = tree_max(_node->left);
+				}
+				else {
+					node_pointer y = _node->parent;
+					while (y != NULL && _node == y->left) {
+						_node = y;
+						y = y->parent;
+					}
+					_node = y;
+				}
+				return *this;
+			}
+
+			RBTreeIter operator--(int) {
+				RBTreeIter<value_type> temp = *this;
+				if (_node->left && !_node->left->is_nil) {
+					_node = tree_max(_node->left);
+				}
+				else {
+					node_pointer y = _node->parent;
+					while (y != NULL && _node == y->left) {
+						_node = y;
+						y = y->parent;
+					}
+					_node = y;
+				}
+				return temp;
+			}
+
+			node_pointer node() const {
+				return _node;
+			}
+
+		private:
+			node_pointer _node;
+
+			node_pointer tree_min(node_pointer n) const {
+				while(n->left != NULL && !n->left->is_nil)
+					n = n->left;
+				return n;
+			}
+
+			node_pointer tree_max(node_pointer n) const {
+				while (!n->right->is_nil)
+					n = n->right;
+				return n;
+			}
+	};	
+
+	template<typename A, typename B> bool operator==(const RBTreeIter<A> & lhs, const RBTreeIter<B> & rhs) {
+		return (lhs.node() == rhs.node());
+	}
+
+	template<typename A, typename B> bool operator!=(const RBTreeIter<A> & lhs, const RBTreeIter<B> & rhs) {
+		return (lhs.node() != rhs.node());
+	}
+
+	template <bool is_valid, typename T> struct valid_tag {
 		typedef T type;
 		const static bool value = is_valid;
 	};

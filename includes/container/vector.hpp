@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 10:54:07 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/28 11:26:51 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace ft {
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef const ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 			typedef typename ft::iterator_traits<iterator>::difference_type		difference_type; 
-			typedef typename allocator_type::size_type       					size_type;
+			typedef typename allocator_type::size_type							size_type;
 			typedef typename allocator_type::pointer							pointer;
 
 			explicit vector(const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
@@ -49,12 +49,7 @@ namespace ft {
 				}
 			}
 
-			template<class InputIt> vector(
-					InputIt first, 
-					InputIt last, 
-					const Allocator& alloc = Allocator(), 
-					typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0
-				) : _alloc(alloc) {
+			template<class InputIt> vector(InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
 				difference_type count = dist(first, last);
 				this->first = _alloc.allocate(count);
 				this->vector_size = this->first + count;
@@ -68,7 +63,6 @@ namespace ft {
 			vector(const vector& other) : _alloc(other._alloc), first(0x0), last(0x0), vector_size(0x0) {
 				this->insert(this->begin(), other.begin(), other.end());
 			}
-			// vector(const vector& other, const Allocator& alloc);
 
 			~vector() {
 				this->clear();

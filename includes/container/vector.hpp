@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 11:26:51 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/28 12:12:07 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <memory>
 #include <algorithm>
-#include <cstddef>
 
 #include <enable_if.hpp>
 #include <iterator.hpp>
@@ -50,6 +49,7 @@ namespace ft {
 			}
 
 			template<class InputIt> vector(InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
+				// Need to check if the Input Iterators are correct
 				difference_type count = dist(first, last);
 				this->first = _alloc.allocate(count);
 				this->vector_size = this->first + count;

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 10:54:53 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 11:53:17 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/28 12:05:03 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define STACK_HPP
 
 #include <algorithm>
-#include <cstddef>
+#include <cftdef>
 
 #include <vector.hpp>
 #include <iterator.hpp>
@@ -70,10 +70,40 @@ namespace ft {
 			void pop() {
 				this->c.pop_back(value);
 			}
-		
+
+			template< class T, class Container > friend bool operator==(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2);
+			template< class T, class Container > friend bool operator!=(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2);
+			template< class T, class Container > friend bool operator<(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2);
+			template< class T, class Container > friend bool operator<=(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2);
+			template< class T, class Container > friend bool operator>(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2);
+			template< class T, class Container > friend bool operator>=(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2);
 		protected:
 			Container 	c;
 	};
+	
+	template< class T, class Container > bool operator==(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2) {
+		return (stack1.c == stack2.c);
+	}
+
+	template< class T, class Container > bool operator!=(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2) {
+		return (stack1.c != stack2.c);
+	}
+
+	template< class T, class Container > bool operator<(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2) {
+		return (stack1.c < stack2.c);
+	}
+
+	template< class T, class Container > bool operator<=(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2) {
+		return (stack1.c <= stack2.c);
+	}
+
+	template< class T, class Container > bool operator>(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2) {
+		return (stack1.c > stack2.c);
+	}
+	
+	template< class T, class Container > bool operator>=(const ft::stack<T,Container>& stack1, const ft::stack<T,Container>& stack2) {
+		return (stack1.c >= stack2.c);
+	}
 }
 
 #endif

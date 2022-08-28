@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 12:25:33 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/28 14:38:41 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,6 @@ namespace ft {
 			reference operator[](difference_type count) {
 				return (*(operator + (count)));
 			}
-
-			// operator random_access_iterator<const T> const {
-			// 	return (random_access_iterator<const T>(this->current));
-			// }
 		
 		private:
 			pointer current;

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 14:29:01 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:28:15 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ namespace ft {
 			typedef value_type&													reference;
 			typedef const value_type&											const_reference;
 			typedef ft::random_access_iterator<value_type>						iterator;
-			typedef const ft::random_access_iterator<value_type>				const_iterator;
+			typedef ft::random_access_iterator<const value_type>				const_iterator;
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
-			typedef const ft::reverse_iterator<const_iterator>					const_reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 			typedef typename ft::iterator_traits<iterator>::difference_type		difference_type; 
 			typedef typename allocator_type::size_type							size_type;
 			typedef typename allocator_type::pointer							pointer;
@@ -209,7 +209,7 @@ namespace ft {
 			void reserve(size_type new_cap) {
 				if (new_cap > this->max_size())
 					throw(std::length_error("vector::reserve"));
-				else if (new_cap> this->capacity()) {
+				else if (new_cap > this->capacity()) {
 					pointer prev_start = this->first;
 					pointer prev_end = this->last;
 					size_type prev_size = this->size();
@@ -239,9 +239,51 @@ namespace ft {
 				}
 			}
 
-			// iterator insert(iterator pos, const T&value);
-			// void insert(iterator pos, size_type count, const T& value);
-			// template<class InputIt> void insert(iterator pos, InputIt first, InputIt last);
+			iterator insert(iterator pos, const T&value) {
+				// if (pos < this->begin() || pos > this->end())
+				// 	throw std::exception();
+				difference_type loc = &(*pos) - this->first;
+				if (size_type(this->vector_size - this->last) >= this->size() + 1) {
+					for (size_type i = 0; i < (size_type) loc; i++)
+						this->_alloc.construct(this->last);
+					this->last++;
+					this->_alloc.construct(&(*pos), value);
+				} else {
+					int new_capacity;
+					if (this->size() * 2 > 0)
+						new_capacity = this->size() * 2;
+					else
+						new_capacity = 1;
+					pointer new_first = this->_alloc.allocate(new_capacity);
+					pointer new_last = new_first + this->size() + 1;
+					pointer new_vector_size = new_first + new_capacity;
+					for (size_type i = 0; i < (size_type) loc; i++)
+						this->_alloc.construct(new_first, *(this->first + i));
+					for (size_type i = 0; i < this->size() - loc; i++)
+						this->_alloc.construct(new_last - 1, *(this->last - i - 1));
+					for (size_type i = 0; i < this->size(); i++)
+						this->_alloc.destroy(this->first + 1);
+					if (this->first)
+						this->_alloc.deallocate(this->first, this->capacity());
+					this->first = new_first;
+					this->last = new_last;
+					this->vector_size = new_vector_size;
+				}
+				return (iterator(this->first + loc));
+			}
+
+			void insert(iterator pos, size_type count, const T& value) {
+				if (count == 0)
+					return;
+				if (count > this->max_size())
+					throw std::exception();
+			}
+
+			template<class InputIt> void insert(iterator pos, InputIt first, InputIt last, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) {
+				// TODO check if valid iterators
+				for (; first != last; ++first) 
+					this->insert(pos, *(first));
+			}
 			
 			// iterator erase(iterator pos);
 			// iterator erase(iterator first, iterator last);

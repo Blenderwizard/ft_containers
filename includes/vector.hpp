@@ -15,11 +15,13 @@
 
 #include <memory>
 #include <algorithm>
+#include <functional>
 
 #include "./utils/enable_if.hpp"
 #include "./utils/iterator.hpp"
 #include "./utils/reverse_iterator.hpp"
 #include "./utils/is_integral.hpp"
+#include "./utils/equal.hpp"
 
 namespace ft {
 	template<class T, class Allocator = std::allocator<T> > class vector {
@@ -70,10 +72,10 @@ namespace ft {
 			}
 
 			vector& operator=(const vector& other) {
-				if (other != *this) {
-					this->clear();
-					this->insert(this->end(), other.begin(), other.end());
-				}
+				if (other == *this)
+					return (*this);
+				this->clear();
+				this->insert(this->end(), other.begin(), other.end());
 				return (*this);
 			}
 
@@ -208,7 +210,7 @@ namespace ft {
 
 			void reserve(size_type new_cap) {
 				if (new_cap > this->max_size())
-					throw(std::length_error("vector::reserve"));
+					std::exception();
 				else if (new_cap > this->capacity()) {
 					pointer prev_start = this->first;
 					pointer prev_end = this->last;
@@ -242,14 +244,14 @@ namespace ft {
 			iterator insert(iterator pos, const T&value) {
 				// if (pos < this->begin() || pos > this->end())
 				// 	throw std::exception();
-				difference_type loc = &(*pos) - this->first;
+				size_type loc = &(*pos) - this->first;
 				if (size_type(this->vector_size - this->last) >= this->size() + 1) {
-					for (size_type i = 0; i < (size_type) loc; i++)
-						this->_alloc.construct(this->last);
+					for (size_type i = 0; i < loc; i++)
+						this->_alloc.construct(this->last - i, *(this->last - i - 1));
 					this->last++;
 					this->_alloc.construct(&(*pos), value);
 				} else {
-					int new_capacity;
+					size_type new_capacity;
 					if (this->size() * 2 > 0)
 						new_capacity = this->size() * 2;
 					else
@@ -257,8 +259,9 @@ namespace ft {
 					pointer new_first = this->_alloc.allocate(new_capacity);
 					pointer new_last = new_first + this->size() + 1;
 					pointer new_vector_size = new_first + new_capacity;
-					for (size_type i = 0; i < (size_type) loc; i++)
+					for (size_type i = 0; i < loc; i++)
 						this->_alloc.construct(new_first, *(this->first + i));
+					this->_alloc.construct(new_first + loc, value);
 					for (size_type i = 0; i < this->size() - loc; i++)
 						this->_alloc.construct(new_last - 1, *(this->last - i - 1));
 					for (size_type i = 0; i < this->size(); i++)
@@ -277,16 +280,119 @@ namespace ft {
 					return;
 				if (count > this->max_size())
 					throw std::exception();
+				size_type loc = &(*pos) - this->first;
+				if (size_type(this->vector_size - this->last) >= count) {
+					for (size_type i = 0; i < this->size() - loc; i++)
+						this->_alloc.construct(this->last - i + (count - 1), *(this->last - i - 1));
+					this->last += count;
+					while (count) {
+						this->_alloc.construct(&(*pos) + (count - 1), value);
+						count--;
+					}
+				} else {
+					size_type new_capacity;
+					if (this->size() * 2 > 0)
+						new_capacity = this->size() * 2;
+					else
+						new_capacity = 1;
+					pointer new_first = this->_alloc.allocate(new_capacity);
+					pointer new_vector_size = new_first + new_capacity;
+					if (size_type(new_vector_size - new_first) < this->size() + count) {
+						if (new_first)
+							this->_alloc.deallocate(new_first, new_first - new_vector_size);
+						new_capacity = this->size() + count;
+						new_first = _alloc.allocate(new_capacity);
+						new_vector_size = new_first + new_capacity;
+					}
+					pointer new_last = new_first + this->size() + count;
+					for (size_type i = 0; i < (&(*pos) - this->first); i++)
+						this->_alloc.construct(new_first + i, *(this->first + i));
+					for (size_type i = 0; i < count; i++)
+						this->_alloc.construct(new_first + loc + i, value);
+					for (size_type i = 0; i < (this->size() - loc); i++)
+						this->_alloc.construct(new_first - i - 1, *(this->last - i - 1));
+
+					for (size_type i = 0; i < this->size(); i++)
+						this->_alloc.destroy(this->first + i);
+					this->_alloc.deallocate(this->first, this->capacity());
+
+					this->first = new_first;
+					this->last = new_last;
+					this->vector_size = new_vector_size;
+				}
 			}
 
 			template<class InputIt> void insert(iterator pos, InputIt first, InputIt last, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) {
 				// TODO check if valid iterators
-				for (; first != last; ++first) 
-					this->insert(pos, *(first));
+				size_type count = this->dist(first, last);
+				if (size_type(this->vector_size - this->last) >= count) {
+					for (size_type i = 0; i < this->size() - (&(*pos) - this->first); i++)
+						this->_alloc.construct(this->last - i + (count - 1), *(this->last - i - 1));
+					this->last += count;
+					for (; &(*first) != &(*last); first++) {
+						this->_alloc.construct(&(*pos), *first);
+						pos++;
+					}
+				} else {
+					size_type new_capacity;
+					if (this->size() * 2 > 0)
+						new_capacity = this->size() * 2;
+					else
+						new_capacity = 1;
+					pointer new_first = this->_alloc.allocate(new_capacity);
+					pointer new_last = new_first + this->size() + count;
+					pointer new_vector_size = new_first + (this->size() * 2);
+					if (size_type(new_vector_size - new_first) < this->size() + count) {
+						if (new_first)
+							this->_alloc.deallocate(new_first, new_vector_size - new_first);
+						new_first = this->_alloc.allocate (this->size() + count);
+						new_last = new_first + this->size() + count;
+						new_vector_size = new_last;
+					}
+					for (size_type i = 0; i < (size_type) (&(*pos) - this->first); i++)
+						this->_alloc.construct(new_first + i, *(this->first + i));
+					for (int i = 0; &(*first) != &(*last); first++) {
+						this->_alloc.construct(new_first + (&(*pos) - this->first) + i, *first);
+						i++;
+					}
+					for (size_type i = 0; i < this->size() - (&(*pos) - this->first); i++)
+						this->_alloc.construct(new_first + (&(*pos) - this->first) + count + i, *(this->first + (&(*pos) - this->first) + i));
+					for (size_type i = 0; i < this->size(); i++)
+						this->_alloc.destroy(this->first + i);
+					this->_alloc.deallocate(this->first, this->capacity());
+
+					this->first = new_first;
+					this->last = new_last;
+					this->vector_size = new_vector_size;
+				}
 			}
 			
-			// iterator erase(iterator pos);
-			// iterator erase(iterator first, iterator last);
+			iterator erase(iterator pos) {
+				pointer loc = &(*pos);
+				this->_alloc.destroy(&(*pos));
+				if (&(*pos) + 1 == this->last)
+					_alloc.destroy(&(*pos));
+				else {
+					for (difference_type i = 0; i < this->last - &(*pos) - 1; i++) {
+						this->_alloc.construct(&(*pos) + i, *(&(*pos) + i + 1));
+						this->_alloc.destroy(&(*pos) + i + 1);
+					}
+				}
+				this->last -= 1;
+				return (iterator(loc));
+			}
+
+			iterator erase(iterator first, iterator last) {
+				pointer loc = &(*first);
+				for (; &(*first) != &(*last); first++)
+					this->_alloc.destroy(&(*first));
+				for (difference_type i = 0; i < this->last - &(*last); i++) {
+					this->_alloc.construct(loc + i, *(&(*last) + i));
+					this->_alloc.destroy(&(*last) + i);
+				}
+				this->last -= (&(*last) - loc);
+				return (iterator(loc));
+			}
 
 			void push_back(const T& value) {
 				if (this->last == vector_size) {
@@ -305,8 +411,31 @@ namespace ft {
 				(this->last)--;
 			}
 			
-			// void resize(size_type count);
-			// void resize(size_type count, T value = T());
+			void resize(size_type count) {
+				if (count > this->max_size())
+					throw (std::length_error("vector::resize"));
+				else if (count < this->size()) {
+					while (this->size() > count) {
+						this->last--;
+						this->_alloc.destroy(this->last);
+					}
+				}
+				else
+					this->insert(this->end(), count - this->size(), value_type());
+			}
+
+			void resize (size_type count, value_type val = value_type()) {
+				if (count > this->max_size())
+					throw (std::length_error("vector::resize"));
+				else if (count < this->size()) {
+					while (this->size() > count) {
+						this->last--;
+						this->_alloc.destroy(this->last);
+					}
+				}
+				else
+					this->insert(this->end(), count - this->size(), val);
+			}
 
 			void swap(vector& other) {
 				if (other != *this) {
@@ -340,6 +469,48 @@ namespace ft {
 			return (rtn);
 			}
 	};
+
+	template <class T, class Alloc> bool operator== (const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+		if (vec1.size() != vec2.size())
+			return (false);
+		return (ft::equal(vec1.begin(), vec1.end(), vec2.begin()));
+	}
+
+	template <class T, class Alloc> bool operator!= (const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+		return (!(vec1 == vec2));
+	}
+
+	template <class T, class Alloc> bool operator< (const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+		typename ft::vector<T, Alloc>::iterator first1 = vec1.begin();
+		typename ft::vector<T, Alloc>::iterator last1 = vec1.end();
+		typename ft::vector<T, Alloc>::iterator first2 = vec2.begin();
+		typename ft::vector<T, Alloc>::iterator last2 = vec2.end();
+		while (first1 != last1) {
+			if (first2 == last2 || *first2 < *first1)
+				return false;
+			else if (*first1 < *first2)
+				return true;
+			++first1;
+			++first2;
+		}
+		return (first2 != last2);
+	}
+
+	template <class T, class Alloc> bool operator<= (const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+		return (!(vec2 < vec1));
+	}
+
+	template <class T, class Alloc> bool operator>(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+		return (vec2 < vec1);
+	}
+
+	template <class T, class Alloc> bool operator>= (const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+		return (!(vec1 < vec2));
+	}
+	
+	template <class T, class Alloc> void swap (ft::vector<T,Alloc>& vec1, ft::vector<T,Alloc>& vec2) {
+		vec1.swap(vec2);
+	}
 }
 
 #endif

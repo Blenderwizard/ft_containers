@@ -161,7 +161,7 @@ namespace ft {
 		return (rai1.base() - rai2.base());
 	}
 
-	template<class T> struct Node{
+	/*template<class T> struct Node{
 		public:
 			explicit Node(T *srcval = 0) :	value(srcval), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
 	
@@ -314,7 +314,7 @@ namespace ft {
 
 	template<typename RBTI1, typename RBTI2> bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() != rhs.node());
-	}
+	} */
 }
 
 #endif

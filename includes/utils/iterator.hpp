@@ -6,34 +6,24 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 11:57:58 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 14:36:50 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITERATORS_HPP
 #define ITERATORS_HPP
 
-#include <iterator_traits.hpp>
+#include "iterator_traits.hpp"
 
 namespace ft {
-	template <class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&> class iterator {
+	template <typename T> class random_access_iterator {
 		public:
-			typedef T			value_type;
-			typedef Distance	difference_type;
-			typedef Pointer		pointer;
-			typedef Reference	reference;
-			typedef Category	iterator_category;
-    };
-
-	class random_access_iterator_tag {};
-
-	template <typename T> class random_access_iterator : ft::iterator<ft::random_access_iterator_tag, T> {
-		public:
-			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category		iterator_category;
-			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type			value_type;
-			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type		difference_type;
-			typedef T*																				pointer;
-			typedef T&																				reference;
+			typedef std::random_access_iterator_tag						iterator_category;
+			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
+			typedef typename ft::iterator_traits<T*>::reference 		reference;
+			typedef typename ft::iterator_traits<T*>::pointer			pointer;
+			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+			typedef pointer												iterator_type;
             
 			random_access_iterator() : current(0x0) {}
 
@@ -83,21 +73,26 @@ namespace ft {
 				return (ret);
 			}
 
-			random_access_iterator operator+(difference_type count) const {
+			random_access_iterator operator+(const difference_type & count) const {
 				return (this->current + count);
 			}
 
-			random_access_iterator operator-(difference_type count) const {
+			random_access_iterator operator-(const difference_type & count) const {
 				return (this->current - count);
 			}
 
-			random_access_iterator operator+=(difference_type count) {
+			random_access_iterator operator+=(const difference_type & count) {
 				this->current += count;
 				return (*this);
 			}
 
-			reference operator[](difference_type count) {
-				return (*(operator + (count)));
+			random_access_iterator operator-=(const difference_type & count) {
+				this->current -= count;
+				return (*this);
+			}
+
+			reference operator[](difference_type & count) {
+				return (*(this->current + count));
 			}
 		
 		private:
@@ -199,11 +194,9 @@ namespace ft {
 			bool	is_nil;
 	};
 
-	class red_black_tree_iterator_tag {};
-
 	template<typename T> class red_black_tree_iterator {
 		public:
-			typedef std::bidirectional_iterator_tag iterator_category;
+			typedef std::bidirectional_iterator_tag						iterator_category;
 			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
 			typedef typename ft::iterator_traits<T*>::reference 		reference;
 			typedef typename ft::iterator_traits<T*>::pointer			pointer;
@@ -322,15 +315,6 @@ namespace ft {
 	template<typename RBTI1, typename RBTI2> bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() != rhs.node());
 	}
-
-	template <bool is_valid, typename T> struct valid_tag {
-		typedef T type;
-		const static bool value = is_valid;
-	};
-
-	template <typename T> struct check_iterator_tagged_ft : public valid_tag<false, T> { };
-	template <> struct check_iterator_tagged_ft<ft::random_access_iterator_tag> : public valid_tag<true, ft::random_access_iterator_tag> { };
-	template <> struct check_iterator_tagged_ft<ft::red_black_tree_iterator_tag> : public valid_tag<true, ft::red_black_tree_iterator_tag> { };
 }
 
 #endif

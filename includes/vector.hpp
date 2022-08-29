@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 12:12:07 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 14:29:01 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include <memory>
 #include <algorithm>
 
-#include <enable_if.hpp>
-#include <iterator.hpp>
-#include <reverse_iterator.hpp>
-#include <is_integral.hpp>
+#include "./utils/enable_if.hpp"
+#include "./utils/iterator.hpp"
+#include "./utils/reverse_iterator.hpp"
+#include "./utils/is_integral.hpp"
 
 namespace ft {
 	template<class T, class Allocator = std::allocator<T> > class vector {
@@ -49,7 +49,7 @@ namespace ft {
 			}
 
 			template<class InputIt> vector(InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
-				// Need to check if the Input Iterators are correct
+				// TODO: Need to check if the Input Iterators are correct
 				difference_type count = dist(first, last);
 				this->first = _alloc.allocate(count);
 				this->vector_size = this->first + count;
@@ -83,12 +83,12 @@ namespace ft {
 					return ;
 				if (size_type(this->vector_size - this->first) >= count ) {
 					for (; count > 0; count--) {
-						_alloc.construct(this->last , value);
+						this->_alloc.construct(this->last , value);
 						(this->last)++;
 					}
 				} else {
-					_alloc.deallocate(this->first, this->capacity());
-					this->first = _alloc.allocate(count);
+					this->_alloc.deallocate(this->first, this->capacity());
+					this->first = this->_alloc.allocate(count);
 					this->last = this->first;
 					this->vector_size = this->first + count;
 					for (; count > 0; count--) {
@@ -97,7 +97,13 @@ namespace ft {
 					}
 				}
 			}
-			template<class InputIt> void assign(InputIt first, InputIt last);
+
+			template<class InputIt> void assign(InputIt first, InputIt last, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) {
+				this->clear();
+				for(; first != last; first++) {
+					this->push_back(*first);
+				}
+			}
 
 			allocator_type get_allocator() const {
 				return this->_alloc;
@@ -152,6 +158,7 @@ namespace ft {
 			iterator begin() {
 				return (this->first);
 			}
+
 			const_iterator begin() const {
 				return (this->first);
 			}
@@ -161,6 +168,7 @@ namespace ft {
 					return (this->first);
 				return (this->last);
 			}
+			
 			const_iterator end() const {
 				if (this->empty())
 					return (this->first);
@@ -170,6 +178,7 @@ namespace ft {
 			reverse_iterator rbegin() {
 				return (reverse_iterator(this->end()));
 			}
+			
 			const_reverse_iterator rbegin() const {
 				return (reverse_iterator(this->end()));
 			}
@@ -177,6 +186,7 @@ namespace ft {
 			reverse_iterator rend() {
 				return (reverse_iterator(this->begin()));
 			}
+			
 			const_reverse_iterator rend() const {
 				return (reverse_iterator(this->begin()));
 			}
@@ -229,12 +239,12 @@ namespace ft {
 				}
 			}
 
-			iterator insert(iterator pos, const T&value);
-			void insert(iterator pos, size_type count, const T& value);
-			template<class InputIt> void insert(iterator pos, InputIt first, InputIt last);
+			// iterator insert(iterator pos, const T&value);
+			// void insert(iterator pos, size_type count, const T& value);
+			// template<class InputIt> void insert(iterator pos, InputIt first, InputIt last);
 			
-			iterator erase(iterator pos);
-			iterator erase(iterator first, iterator last);
+			// iterator erase(iterator pos);
+			// iterator erase(iterator first, iterator last);
 
 			void push_back(const T& value) {
 				if (this->last == vector_size) {
@@ -253,8 +263,8 @@ namespace ft {
 				(this->last)--;
 			}
 			
-			void resize(size_type count);
-			void resize(size_type count, T value = T());
+			// void resize(size_type count);
+			// void resize(size_type count, T value = T());
 
 			void swap(vector& other) {
 				if (other != *this) {

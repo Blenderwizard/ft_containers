@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 10:54:53 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 12:16:54 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 12:48:35 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 #include <algorithm>
 
-#include <vector.hpp>
-#include <iterator.hpp>
-#include <reverse_iterator.hpp>
+#include "./vector.hpp"
+#include "./utils/iterator.hpp"
+#include "./utils/reverse_iterator.hpp"
 
 namespace ft {
 	template< class T, class Container = ft::vector<T> > class stack {

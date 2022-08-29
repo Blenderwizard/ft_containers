@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 11:52:43 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 12:49:37 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 #include <memory>
 #include <algorithm>
 
-#include <pair.hpp>
-#include <iterator.hpp>
-#include <enable_if.hpp>
-#include <is_integral.hpp>
-#include <reverse_iterator.hpp>
+#include "pair.hpp"
+#include "iterator.hpp"
+#include "enable_if.hpp"
+#include "is_integral.hpp"
+#include "reverse_iterator.hpp"
 
 namespace ft {
 	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree{

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 10:20:53 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 12:48:20 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@
 #include <memory>
 #include <utility>
 
-#include <pair.hpp>
-#include <iterator.hpp>
-#include <reverse_iterator.hpp>
+#include "./utils/pair.hpp"
+#include "./utils/iterator.hpp"
+#include "./utils/red_black_tree.hpp"
+#include "./utils/reverse_iterator.hpp"
 
 namespace ft {
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator< ft::pair<const Key, T> > > class map {

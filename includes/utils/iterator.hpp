@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 10:47:51 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 11:57:58 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,56 +208,56 @@ namespace ft {
 			typedef typename ft::iterator_traits<T*>::reference 		reference;
 			typedef typename ft::iterator_traits<T*>::pointer			pointer;
 			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
-			typedef Node<typename ft::remove_const<value_type>::type >* node_pointer;
+			typedef Node<typename std::remove_const<value_type>::type >* node_pointer;
 
 			red_black_tree_iterator() {}
 
 			red_black_tree_iterator(void *node): _node(static_cast<node_pointer>(node)) {}
 
-			red_black_tree_iterator(const red_black_tree_iterator<typename ft::remove_const<value_type>::type > & other) {
+			red_black_tree_iterator(const red_black_tree_iterator<typename std::remove_const<value_type>::type > & other) {
 				*this = other;
 			}
 
-			red_black_tree_iterator& operator=(const red_black_tree_iterator<typename ft::remove_const<value_type>::type>& other) {
+			red_black_tree_iterator& operator=(const red_black_tree_iterator<typename std::remove_const<value_type>::type>& other) {
 				this->_node = other.node();
 				return *this;
 			}
 
 			reference operator*() const {
-				return *(_node->value);
+				return *(this->_node->value);
 			}
 
 			pointer operator->() const {
-				return _node->value;
+				return this->_node->value;
 			}
 
 			red_black_tree_iterator& operator++() {
-				if (_node->right && !_node->right->is_nil) {
-					_node = tree_min(_node->right);
+				if (this->_node->right && !_node->right->is_nil) {
+					this->_node = tree_min(_node->right);
 				}
 				else {
-					node_pointer y = _node->parent;
-					while (y != NULL && _node == y->right) {
-						_node = y;
+					node_pointer y = this->_node->parent;
+					while (y != NULL && this->_node == y->right) {
+						this->_node = y;
 						y = y->parent;
 					}
-					_node = y;
+					this->_node = y;
 				}
 				return *this;
 			}
 
 			red_black_tree_iterator operator++(int) {
 				red_black_tree_iterator<value_type> temp = *this;
-				if (!_node->right->is_nil) {
-					_node = tree_min(_node->right);
+				if (!this->_node->right->is_nil) {
+					this->_node = tree_min(_node->right);
 				}
 				else {
-					node_pointer y = _node->parent;
-					while (y != NULL && _node == y->right) {
-						_node = y;
+					node_pointer y = this->_node->parent;
+					while (y != NULL && this->_node == y->right) {
+						this->_node = y;
 						y = y->parent;
 					}
-					_node = y;
+					this->_node = y;
 				}
 				return temp;
 			}
@@ -267,49 +267,49 @@ namespace ft {
 					_node = tree_max(_node->left);
 				}
 				else {
-					node_pointer y = _node->parent;
-					while (y != NULL && _node == y->left) {
-						_node = y;
+					node_pointer y = this->_node->parent;
+					while (y != 0x0 && this->_node == y->left) {
+						this->_node = y;
 						y = y->parent;
 					}
-					_node = y;
+					this->_node = y;
 				}
 				return *this;
 			}
 
 			red_black_tree_iterator operator--(int) {
 				red_black_tree_iterator<value_type> temp = *this;
-				if (_node->left && !_node->left->is_nil) {
-					_node = tree_max(_node->left);
+				if (this->_node->left && !this->_node->left->is_nil) {
+					this->_node = this->tree_max(this->_node->left);
 				}
 				else {
 					node_pointer y = _node->parent;
-					while (y != NULL && _node == y->left) {
-						_node = y;
+					while (y != 0x0 && this->_node == y->left) {
+						this->_node = y;
 						y = y->parent;
 					}
-					_node = y;
+					this->_node = y;
 				}
 				return temp;
 			}
 
 			node_pointer node() const {
-				return _node;
+				return this->_node;
 			}
 
 		private:
 			node_pointer _node;
 
-			node_pointer tree_min(node_pointer n) const {
-				while(n->left != NULL && !n->left->is_nil)
-					n = n->left;
-				return n;
+			node_pointer tree_min(node_pointer node) const {
+				while (node->left != NULL && !node->left->is_nil)
+					node = node->left;
+				return node;
 			}
 
-			node_pointer tree_max(node_pointer n) const {
-				while (!n->right->is_nil)
-					n = n->right;
-				return n;
+			node_pointer tree_max(node_pointer node) const {
+				while (!node->right->is_nil)
+					node = node->right;
+				return node;
 			}
 	};
 

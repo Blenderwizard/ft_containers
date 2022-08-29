@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/08/28 10:46:59 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/08/29 11:48:04 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ _IWHITE			= \x1b[47m
 _COLOR_RESET	= \033[0m
 
 # Folders
-INCLUDES = -I./includes/container -I./includes/other
+INCLUDES = -I./includes -I./includes/utils
 SRC_DIR = src
 OUTS = objs
 

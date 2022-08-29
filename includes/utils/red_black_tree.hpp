@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 11:45:46 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 11:52:43 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 #include <algorithm>
 
 #include <pair.hpp>
+#include <iterator.hpp>
 #include <enable_if.hpp>
 #include <is_integral.hpp>
+#include <reverse_iterator.hpp>
 
 namespace ft {
 	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree{
@@ -39,12 +41,12 @@ namespace ft {
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), size(0x0) {
+			RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) {
 				this->init_nil_head();
 				this->root = this->header;
 			}
 
-			RBTree() : root(0x0), val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), size(0x0) {
+			RBTree() : root(0x0), val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), tree_size(0) {
 				this->init_nil_head();
 				this->root = this->header;
 			}
@@ -69,14 +71,14 @@ namespace ft {
 				if (this->root == NULL)
 					this->init_nil_head();
 				else
-					this->clear_node(_root);
-				if (src.size == 0)
+					this->clear_node(this->root);
+				if (src.tree_size == 0)
 					this->root = this->header;
 				else {
 					this->root = this->copy_node(src.root);
 					this->copy_child(this->root, src.root);
 				}
-				this->size = src.size;
+				this->tree_size = src.tree_size;
 				return *this;
 			}
 
@@ -97,14 +99,14 @@ namespace ft {
 			}
 
 			iterator begin() {
-				if (this->size == 0)
-					return (iterator(this->header))
+				if (this->tree_size == 0)
+					return (iterator(this->header));
 				return (iterator(tree_min(this->root)));
 			}
 
 			const_iterator begin() const {
-				if (this->size == 0)
-					return (const_iterator(this->header))
+				if (this->tree_size == 0)
+					return (const_iterator(this->header));
 				return (const_iterator(tree_min(this->root)));
 			}
 
@@ -189,7 +191,7 @@ namespace ft {
 			ft::pair<iterator, bool> insert(value_type const &value) {
 				node_pointer find = this->search(value, this->root);
 				if (find)
-					return ft::pair<iterator, bool>(iterator(ret), false);
+					return ft::pair<iterator, bool>(iterator(find), false);
 				node_pointer new_node = this->node_alloc.allocate(1);
 				this->node_alloc.construct(new_node, Node<value_type>(create_value(value)));
 				new_node->left = this->nil;
@@ -197,7 +199,7 @@ namespace ft {
 				this->_insert_into_tree(new_node, this->root);
 				ft::pair<iterator, bool> ret(iterator(new_node), true);
 				this->_insert_fixup(new_node);
-				this->size++;
+				this->tree_size++;
 				new_node = this->tree_max(this->root);
 				new_node->right = this->header;
 				this->header->parent = new_node;
@@ -227,7 +229,7 @@ namespace ft {
 				else
 					this->_insert_into_tree(new_node, this->root);
 				this->_insert_fixup(new_node);
-				this->size++;
+				this->tree_size++;
 				node_pointer max_of_tree = this->tree_max(this->root);
 				max_of_tree->right = this->header;
 				this->header->parent = max_of_tree;
@@ -266,12 +268,12 @@ namespace ft {
 				this->free_node(for_free);
 				if (y_original_is_black)
 					this->erase_fixup(x);
-				this->size--;
+				this->tree_size--;
 				this->nil->parent = 0x0;
-				if (this->size == 0)
+				if (this->tree_size == 0)
 					this->root = this->header;
 				else {
-					if (this->size != 1)
+					if (this->tree_size != 1)
 						x = tree_max(this->root);
 					else
 						x = this->root;
@@ -281,7 +283,7 @@ namespace ft {
 			}
 
 			size_type erase(const value_type& value) {
-				node_pointer ret = search(value, _root);
+				node_pointer ret = search(value, this->root);
 				if (ret)
 					this->erase(iterator(ret));
 				return (ret != 0x0);
@@ -348,7 +350,7 @@ namespace ft {
 			}
 
 			size_type size() const {
-				return (this->size);
+				return (this->tree_size);
 			}
 
 			size_type max_size() const {
@@ -356,7 +358,7 @@ namespace ft {
 			}
 			
 			bool empty() const {
-				return (this->size == 0);
+				return (this->tree_size == 0);
 			}
 
 			value_compare value_comp() const {
@@ -364,10 +366,10 @@ namespace ft {
 			}
 			
 			void clear() {
-				this->clear_node(_root);
+				this->clear_node(this->root);
 				this->root = this->header;
 				this->header->parent = 0x0;
-				this->size = 0;
+				this->tree_size = 0;
 			}
 			
 			size_type count(const value_type& value) const {
@@ -414,7 +416,7 @@ namespace ft {
 				std::swap(this->root, other.root);
 				std::swap(this->nil, other.nil);
 				std::swap(this->header, other.header);
-				std::swap(this->size, other.size);
+				std::swap(this->tree_size, other.tree_size);
 				std::swap(this->node_alloc, other.node_alloc);
 				std::swap(this->val_alloc, other.val_alloc);
 				std::swap(this->compare, other.compare);
@@ -597,7 +599,7 @@ namespace ft {
 			node_pointer				nil;
 			node_pointer				header;
 			node_pointer				root;
-			size_type					size;
+			size_type					tree_size;
 	};
 
 	template<class Content, class Compare, class Alloc> void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs) {

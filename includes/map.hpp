@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 10:55:40 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 10:20:53 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <utility>
 
 #include <pair.hpp>
+#include <iterator.hpp>
 #include <reverse_iterator.hpp>
 
 namespace ft {

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 13:34:44 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 10:45:16 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <algorithm>
 
 #include <pair.hpp>
+#include <enable_if.hpp>
+#include <is_integral.hpp>
 
 namespace ft {
 	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree{
@@ -32,8 +34,8 @@ namespace ft {
 			typedef typename allocator_type::const_pointer						const_pointer;
 			typedef std::ptrdiff_t												difference_type;
 			typedef std::size_t													size_type;
-			typedef RBTreeIter<T>												iterator;
-			typedef RBTreeIter<const T>											const_iterator;
+			typedef red_black_tree_iterator<T>									iterator;
+			typedef red_black_tree_iterator<const T>							const_iterator;
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 

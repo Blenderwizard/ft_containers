@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/28 14:38:41 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 10:47:51 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ namespace ft {
 		public:
 			explicit Node(T *srcval = 0) :	value(srcval), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
 	
-			Node( Node const & other) {
+			Node(Node const & other) {
 				this->is_black = other.is_black;
 				this->value = other.value;
 				this->parent = other.parent;
@@ -199,7 +199,9 @@ namespace ft {
 			bool	is_nil;
 	};
 
-	template<typename T> class RBTreeIter {
+	class red_black_tree_iterator_tag {};
+
+	template<typename T> class red_black_tree_iterator {
 		public:
 			typedef std::bidirectional_iterator_tag iterator_category;
 			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
@@ -208,15 +210,15 @@ namespace ft {
 			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
 			typedef Node<typename ft::remove_const<value_type>::type >* node_pointer;
 
-			RBTreeIter() {}
+			red_black_tree_iterator() {}
 
-			RBTreeIter(void *node): _node(static_cast<node_pointer>(node)) {}
+			red_black_tree_iterator(void *node): _node(static_cast<node_pointer>(node)) {}
 
-			RBTreeIter(const RBTreeIter<typename ft::remove_const<value_type>::type > & other) {
+			red_black_tree_iterator(const red_black_tree_iterator<typename ft::remove_const<value_type>::type > & other) {
 				*this = other;
 			}
 
-			RBTreeIter& operator=(const RBTreeIter<typename ft::remove_const<value_type>::type>& other) {
+			red_black_tree_iterator& operator=(const red_black_tree_iterator<typename ft::remove_const<value_type>::type>& other) {
 				this->_node = other.node();
 				return *this;
 			}
@@ -229,7 +231,7 @@ namespace ft {
 				return _node->value;
 			}
 
-			RBTreeIter& operator++() {
+			red_black_tree_iterator& operator++() {
 				if (_node->right && !_node->right->is_nil) {
 					_node = tree_min(_node->right);
 				}
@@ -244,8 +246,8 @@ namespace ft {
 				return *this;
 			}
 
-			RBTreeIter operator++(int) {
-				RBTreeIter<value_type> temp = *this;
+			red_black_tree_iterator operator++(int) {
+				red_black_tree_iterator<value_type> temp = *this;
 				if (!_node->right->is_nil) {
 					_node = tree_min(_node->right);
 				}
@@ -260,7 +262,7 @@ namespace ft {
 				return temp;
 			}
 
-			RBTreeIter& operator--() {
+			red_black_tree_iterator& operator--() {
 				if (_node->left && !_node->left->is_nil) {
 					_node = tree_max(_node->left);
 				}
@@ -275,8 +277,8 @@ namespace ft {
 				return *this;
 			}
 
-			RBTreeIter operator--(int) {
-				RBTreeIter<value_type> temp = *this;
+			red_black_tree_iterator operator--(int) {
+				red_black_tree_iterator<value_type> temp = *this;
 				if (_node->left && !_node->left->is_nil) {
 					_node = tree_max(_node->left);
 				}
@@ -309,13 +311,15 @@ namespace ft {
 					n = n->right;
 				return n;
 			}
-	};	
+	};
 
-	template<typename A, typename B> bool operator==(const RBTreeIter<A> & lhs, const RBTreeIter<B> & rhs) {
+	// Out of class defs for red black tree iterators
+
+	template<typename RBTI1, typename RBTI2> bool operator==(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() == rhs.node());
 	}
 
-	template<typename A, typename B> bool operator!=(const RBTreeIter<A> & lhs, const RBTreeIter<B> & rhs) {
+	template<typename RBTI1, typename RBTI2> bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() != rhs.node());
 	}
 
@@ -326,6 +330,7 @@ namespace ft {
 
 	template <typename T> struct check_iterator_tagged_ft : public valid_tag<false, T> { };
 	template <> struct check_iterator_tagged_ft<ft::random_access_iterator_tag> : public valid_tag<true, ft::random_access_iterator_tag> { };
+	template <> struct check_iterator_tagged_ft<ft::red_black_tree_iterator_tag> : public valid_tag<true, ft::red_black_tree_iterator_tag> { };
 }
 
 #endif

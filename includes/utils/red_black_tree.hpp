@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 10:45:16 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/29 11:45:46 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,404 +39,406 @@ namespace ft {
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : _val_alloc(a), _node_alloc(node_allocator()), _compare(comp), _root(0), _size(0) {
-				init_nil_head();
-				_root = _header;
+			RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), size(0x0) {
+				this->init_nil_head();
+				this->root = this->header;
 			}
 
-			RBTree() : _root(0), _val_alloc(allocator_type()), _node_alloc(node_allocator()), _compare(value_compare()), _size(0) {
-				init_nil_head();
-				_root = _header;
+			RBTree() : root(0x0), val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), size(0x0) {
+				this->init_nil_head();
+				this->root = this->header;
 			}
 
-			RBTree(const RBTree& src) :  _compare(src._compare), _root(NULL) {
+			RBTree(const RBTree& src) :  compare(src.compare), root(0x0) {
 				*this = src;
 			}
 
-			template<class InputIt> RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare& comp, const allocator_type& alloc = allocator_type()):	_val_alloc(alloc), _node_alloc(node_allocator()), _compare(comp) {
-				init_nil_head();
-				_root = _header;
+			template<class InputIt> RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare& comp, const allocator_type& alloc = allocator_type()): val_alloc(alloc), node_alloc(node_allocator()), compare(comp) {
+				this->init_nil_head();
+				this->root = this->header;
 				for (; first != last; ++first)
-					insert(*first);
+					this->insert(*first);
 			}
 		
 			RBTree& operator=(const RBTree & src){
 				if (this == &src)
 					return *this;
-				this->_node_alloc = src._node_alloc;
-				this->_val_alloc = src._val_alloc;
-				this->_compare = src._compare;
-				if (this->_root == NULL)
-					init_nil_head();
+				this->node_alloc = src.node_alloc;
+				this->val_alloc = src.val_alloc;
+				this->compare = src.compare;
+				if (this->root == NULL)
+					this->init_nil_head();
 				else
-					clear_node(_root);
-				if (src._size == 0)
-					this->_root = this->_header;
+					this->clear_node(_root);
+				if (src.size == 0)
+					this->root = this->header;
 				else {
-					this->_root = copy_node(src._root);
-					copy_child(this->_root, src._root);
+					this->root = this->copy_node(src.root);
+					this->copy_child(this->root, src.root);
 				}
-				this->_size = src._size;
+				this->size = src.size;
 				return *this;
 			}
 
 			~RBTree() {
-				clear_node(_root);
-				_val_alloc.destroy(_header->value);
-				_val_alloc.deallocate(_header->value, 1);
-				_node_alloc.deallocate(_nil, 1);
-				_node_alloc.deallocate(_header, 1);
+				clear_node(this->root);
+				this->val_alloc.destroy(this->header->value);
+				this->val_alloc.deallocate(this->header->value, 1);
+				this->node_alloc.deallocate(this->nil, 1);
+				this->node_alloc.deallocate(this->header, 1);
 			}
 
 			iterator end() {
-				return (iterator(_header));
+				return (iterator(this->header));
 			}
 
 			const_iterator end() const {
-				return (const_iterator(_header));
+				return (const_iterator(this->header));
 			}
 
 			iterator begin() {
-				return (iterator(_size == 0 ? _header : iterator(tree_min(_root))));
+				if (this->size == 0)
+					return (iterator(this->header))
+				return (iterator(tree_min(this->root)));
 			}
 
 			const_iterator begin() const {
-				return (const_iterator(_size == 0 ? _header : const_iterator(tree_min(_root))));
+				if (this->size == 0)
+					return (const_iterator(this->header))
+				return (const_iterator(tree_min(this->root)));
 			}
 
 			reverse_iterator rbegin() {
-				return (reverse_iterator(end()));
+				return (reverse_iterator(this->end()));
 			}	
 
 			const_reverse_iterator rbegin() const {
-				return (const_reverse_iterator(end()));
+				return (const_reverse_iterator(this->end()));
 			}	
 
 			reverse_iterator rend() {
-				return (reverse_iterator(begin()));
+				return (reverse_iterator(this->begin()));
 			}	
 
 			const_reverse_iterator rend() const {
-				return (const_reverse_iterator(begin()));
+				return (const_reverse_iterator(this->begin()));
 			}	
 
 			pointer	create_value(const value_type &value){
-				pointer new_val = _val_alloc.allocate(1);
-				_val_alloc.construct(new_val, value);
+				pointer new_val = this->val_alloc.allocate(1);
+				this->val_alloc.construct(new_val, value);
 				return new_val;
 			}
 
 			node_pointer copy_node(node_pointer other) {
-				node_pointer new_node = _node_alloc.allocate(1);
-				_node_alloc.construct(new_node, Node<T>());
+				node_pointer new_node = this->node_alloc.allocate(1);
+				this->node_alloc.construct(new_node, Node<T>());
 				new_node->is_black = other->is_black;
 				new_node->is_nil = other->is_nil;
-				if (other->value){
-					new_node->value = _val_alloc.allocate(1);
-					_val_alloc.construct(new_node->value, *other->value);
+				if (other->value) {
+					new_node->value = this->val_alloc.allocate(1);
+					this->val_alloc.construct(new_node->value, *other->value);
 				}
 				return (new_node);
 			}
 		
 			void copy_child(node_pointer my_node, node_pointer other) {
 				if (other->left->is_nil)
-					my_node->left = _nil;
+					my_node->left = this->nil;
 				else {
-					my_node->left = copy_node(other->left);
+					my_node->left = this->copy_node(other->left);
 					my_node->left->parent = my_node;
-					copy_child(my_node->left, other->left);
+					this->copy_child(my_node->left, other->left);
 				}
 				if (other->right->is_nil)
-					my_node->right = _nil;
-				else if (other->right->right == NULL){
-					my_node->right = _header;
-					_header->parent = my_node;
-				}
-				else{
-					my_node->right = copy_node(other->right);
+					my_node->right = this->nil;
+				else if (other->right->right == 0x0) {
+					my_node->right = this->header;
+					this->header->parent = my_node;
+				} else {
+					my_node->right = this->copy_node(other->right);
 					my_node->right->parent = my_node;
-					copy_child(my_node->right, other->right);
+					this->copy_child(my_node->right, other->right);
 				}
 			}
 
 			node_pointer search(const value_type &value, node_pointer node) const {
-				if(!node || is_nil(node))
-					return NULL;
-				if (_compare(value, *node->value))
-					return search(value, node->left);
-				if (_compare(*node->value, value))
-					return search(value, node->right);
+				if(!node || this->is_nil(node))
+					return 0x0;
+				if (this->compare(value, *node->value))
+					return this->search(value, node->left);
+				if (this->compare(*node->value, value))
+					return this->search(value, node->right);
 				return node;
 			}
 
 			iterator find(const value_type& value) {
-				node_pointer find_res = search(value, _root);
-				return (find_res == NULL ? end() : iterator(find_res));
+				node_pointer ret = this->search(value, this->root);
+				if (ret == 0x0)
+					return this->end();
+				return iterator(ret);
 			}
 
 			const_iterator find(const value_type& value) const {
-				node_pointer find_res = search(value, _root);
-				return (find_res == NULL ? end() : const_iterator(find_res));
+				node_pointer ret = this->search(value, this->root);
+				if (ret == 0x0)
+					return this->end();
+				return const_iterator(ret);
 			}
 			
 			ft::pair<iterator, bool> insert(value_type const &value) {
-				node_pointer find_val = search(value, _root);
-				if (find_val)
-					return ft::pair<iterator, bool>(iterator(find_val), false);
-				node_pointer new_node = _node_alloc.allocate(1);
-				_node_alloc.construct(new_node, Node<value_type>(create_value(value)));
-				new_node->left = _nil;
-				new_node->right = _nil;
-				_insert_into_tree(new_node, _root);
-				ft::pair<iterator, bool> res(iterator(new_node), true);
-				_insert_fixup(new_node);
-				_size++;
-				new_node = tree_max(_root);
-				new_node->right = _header;
-				_header->parent = new_node;
-				return res;
+				node_pointer find = this->search(value, this->root);
+				if (find)
+					return ft::pair<iterator, bool>(iterator(ret), false);
+				node_pointer new_node = this->node_alloc.allocate(1);
+				this->node_alloc.construct(new_node, Node<value_type>(create_value(value)));
+				new_node->left = this->nil;
+				new_node->right = this->nil;
+				this->_insert_into_tree(new_node, this->root);
+				ft::pair<iterator, bool> ret(iterator(new_node), true);
+				this->_insert_fixup(new_node);
+				this->size++;
+				new_node = this->tree_max(this->root);
+				new_node->right = this->header;
+				this->header->parent = new_node;
+				return ret;
 			} 
 
 			iterator insert(iterator position, const value_type& value) {
-				node_pointer new_node = search(value,_root);
+				node_pointer new_node = search(value,this->root);
 				if (new_node)
 					return (iterator(new_node));
-				new_node = _node_alloc.allocate(1);
-				_node_alloc.construct(new_node, Node<value_type>(create_value(value)));
-				new_node->left = _nil;
-				new_node->right = _nil;
-				if (position == begin()){
-					if (position != end() && _compare(value, *position))
-						_insert_into_tree(new_node, tree_min(_root));
+				new_node = this->node_alloc.allocate(1);
+				this->node_alloc.construct(new_node, Node<value_type>(this->create_value(value)));
+				new_node->left = this->nil;
+				new_node->right = this->nil;
+				if (position == this->begin()){
+					if (position != this->end() && this->compare(value, *position))
+						this->_insert_into_tree(new_node, this->tree_min(this->root));
 					else
-						_insert_into_tree(new_node, _root);
+						this->_insert_into_tree(new_node, this->root);
 				}
-				else if (position == end()){
-					if (position != begin() && _compare(*(--position), value))
-						_insert_into_tree(new_node, _header->parent);
+				else if (position == this->end()){
+					if (position != begin() && this->compare(*(--position), value))
+						this->_insert_into_tree(new_node, this->header->parent);
 					else
-						_insert_into_tree(new_node, _root);
+						this->_insert_into_tree(new_node, this->root);
 				}
 				else
-					_insert_into_tree(new_node, _root);
-				_insert_fixup(new_node);
-				_size++;
-				node_pointer max_of_tree = tree_max(_root);
-				max_of_tree->right = _header;
-				_header->parent = max_of_tree;
+					this->_insert_into_tree(new_node, this->root);
+				this->_insert_fixup(new_node);
+				this->size++;
+				node_pointer max_of_tree = this->tree_max(this->root);
+				max_of_tree->right = this->header;
+				this->header->parent = max_of_tree;
 				return (iterator(new_node));
 			}
 			
 			template<class InputIt> void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
 				for (; first != last; first++)
-					insert(*first);
+					this->insert(*first);
 			}
 
 			void erase(iterator pos) {
 				node_pointer y = pos.node(), x, for_free = y;
 				bool y_original_is_black = y->is_black;
-				if (is_nil(y->left)){
+				if (this->is_nil(y->left)) {
 					x = y->right;
-					transplant(y, y->right);
-				}
-				else if (is_nil(y->right)){
+					this->transplant(y, y->right);
+				} else if (this->is_nil(y->right)) {
 					x = y->left;
-					transplant(y, y->left);
-				}
-				else {
+					this->transplant(y, y->left);
+				} else {
 					node_pointer z = y;
-					y = tree_min(z->right);
+					y = this->tree_min(z->right);
 					y_original_is_black = y->is_black;
 					x = y->right;
 					if (y->parent != z){
-						transplant(y, y->right);
+						this->transplant(y, y->right);
 						y->right = z->right;
 						z->right->parent = y;
 					}
-					transplant(z, y);
+					this->transplant(z, y);
 					y->left = z->left;
 					y->left->parent = y;
 					y->is_black = z->is_black;
 				}
-				free_node(for_free);
+				this->free_node(for_free);
 				if (y_original_is_black)
-					erase_fixup(x);
-				_size--;
-				_nil->parent = NULL;
-				if (_size == 0)
-					_root = _header;
-				else{
-					if (_size != 1)
-						x = tree_max(_root);
+					this->erase_fixup(x);
+				this->size--;
+				this->nil->parent = 0x0;
+				if (this->size == 0)
+					this->root = this->header;
+				else {
+					if (this->size != 1)
+						x = tree_max(this->root);
 					else
-						x = _root;
-					x->right = _header;
-					_header->parent = x;
+						x = this->root;
+					x->right = this->header;
+					this->header->parent = x;
 				}
 			}
 
 			size_type erase(const value_type& value) {
-				node_pointer res = search(value, _root);
-				if (res)
-					erase(iterator(res));
-				return (res != NULL);
+				node_pointer ret = search(value, _root);
+				if (ret)
+					this->erase(iterator(ret));
+				return (ret != 0x0);
 			}
 
 			void erase(iterator first, iterator last) {
 				while (first != last)
-					erase(first++);
+					this->erase(first++);
 			}
 
 			void erase_fixup(node_pointer x) {
 				node_pointer brother;
-				while (x != _root && x->is_black){
-					if (x == x->parent->left){
+				while (x != this->root && x->is_black) {
+					if (x == x->parent->left) {
 						brother = x->parent->right;
-						if (!brother->is_black){
+						if (!brother->is_black) {
 							brother->is_black = true;
 							x->parent->is_black = false;
-							_rotate_left(x->parent);
+							this->_rotate_left(x->parent);
 							brother = x->parent->right;
 						}
-						if (brother->left->is_black && brother->right->is_black){
+						if (brother->left->is_black && brother->right->is_black) {
 							brother->is_black = false;
 							x = x->parent;
-						}
-						else{
+						} else {
 							if (brother->right->is_black){
 								brother->left->is_black = true;
 								brother->is_black = false;
-								_rotate_right(brother);
+								this->_rotate_right(brother);
 								brother = x->parent->right;
 							}
 							brother->is_black = x->parent->is_black;
 							x->parent->is_black = true;
 							brother->right->is_black = true;
-							_rotate_left(x->parent);
-							x = _root;
+							this->_rotate_left(x->parent);
+							x = this->root;
 						}
-					}
-					else{
+					} else {
 						brother = x->parent->left;
-						if (!brother->is_black){
+						if (!brother->is_black) {
 							brother->is_black = true;
 							x->parent->is_black = false;
-							_rotate_right(x->parent);
+							this->_rotate_right(x->parent);
 							brother = x->parent->left;
 						}
-						if (brother->right->is_black && brother->left->is_black){
+						if (brother->right->is_black && brother->left->is_black) {
 							brother->is_black = false;
 							x = x->parent;
-						}
-						else{
+						} else {
 							if (brother->left->is_black){
 								brother->right->is_black = true;
 								brother->is_black = false;
-								_rotate_left(brother);
+								this->_rotate_left(brother);
 								brother = x->parent->left;
 							}
 							brother->is_black = x->parent->is_black;
 							x->parent->is_black = true;
 							brother->left->is_black = true;
-							_rotate_right(x->parent);
-							x = _root;
+							this->_rotate_right(x->parent);
+							x = this->root;
 						}
 					}
 				}
 			}
 
 			size_type size() const {
-				return (_size);
+				return (this->size);
 			}
 
 			size_type max_size() const {
-				return (_val_alloc.max_size());
+				return (this->val_alloc.max_size());
 			}
 			
 			bool empty() const {
-				return (_size == 0);
+				return (this->size == 0);
 			}
 
 			value_compare value_comp() const {
-				return (_compare);
+				return (this->compare);
 			}
 			
 			void clear() {
-				clear_node(_root);
-				_root = _header;
-				_header->parent = NULL;
-				_size = 0;
+				this->clear_node(_root);
+				this->root = this->header;
+				this->header->parent = 0x0;
+				this->size = 0;
 			}
 			
 			size_type count(const value_type& value) const {
-				return (find(value) != end());
+				return (this->find(value) != this->end());
 			}
 
 			iterator lower_bound(const value_type& value) {
-				iterator last = end();
-				for (iterator first = begin(); first != last; ++first){
-					if(!_compare(*first, value))
+				iterator last = this->end();
+				for (iterator first = this->begin(); first != last; ++first) {
+					if (!this->compare(*first, value))
 						return (first);
 				}
 				return (last);
 			}
 
 			const_iterator lower_bound(const value_type& value) const{
-				const_iterator last = end();
-				for (const_iterator first = begin(); first != last; ++first){
-					if(!_compare(*first, value))
+				const_iterator last = this->end();
+				for (const_iterator first = this->begin(); first != last; ++first){
+					if (!this->compare(*first, value))
 						return (first);
 				}
 				return (last);
 			}
 
 			iterator upper_bound(const value_type& value) {
-				iterator last = end();
-				for (iterator first = begin(); first != last; ++first){
-					if(_compare(value, *first))
+				iterator last = this->end();
+				for (iterator first = this->begin(); first != last; ++first){
+					if(this->compare(value, *first))
 						return (first);
 				}
 				return (last);
 			}
 
 			const_iterator upper_bound(const value_type& value) const {
-				const_iterator last = end();
-				for (const_iterator first = begin(); first != last; ++first){
-					if(_compare(value, *first))
+				const_iterator last = this->end();
+				for (const_iterator first = this->begin(); first != last; ++first){
+					if (this->compare(value, *first))
 						return (first);
 				}
 				return (last);
 			}
 
 			void swap(RBTree &other) {
-				std::swap(this->_root, other._root);
-				std::swap(this->_nil, other._nil);
-				std::swap(this->_header, other._header);
-				std::swap(this->_size, other._size);
-				std::swap(this->_node_alloc, other._node_alloc);
-				std::swap(this->_val_alloc, other._val_alloc);
-				std::swap(this->_compare, other._compare);
+				std::swap(this->root, other.root);
+				std::swap(this->nil, other.nil);
+				std::swap(this->header, other.header);
+				std::swap(this->size, other.size);
+				std::swap(this->node_alloc, other.node_alloc);
+				std::swap(this->val_alloc, other.val_alloc);
+				std::swap(this->compare, other.compare);
 			}
 
 			ft::pair<iterator, iterator> equal_range(const value_type &value) {
-				return (ft::make_pair(lower_bound(value), upper_bound(value)));
+				return (ft::make_pair(this->lower_bound(value), this->upper_bound(value)));
 			}
 			
 			allocator_type get_allocator() const {
-				return (_val_alloc);
+				return (this->val_alloc);
 			}
 
 		protected:
-			node_pointer tree_min(node_pointer n) const {
-				while (n != NULL && !is_nil(n->left))
-					n = n->left;
-				return n;
+			node_pointer _tree_min(node_pointer node) const {
+				while (node != 0x0 && !is_nil(node->left))
+					node = node->left;
+				return node;
 			}
 			
-			node_pointer tree_max(node_pointer n) const {
-				while (n != NULL && !is_nil(n->right))
-					n = n->right;
-				return n;
+			node_pointer _tree_max(node_pointer node) const {
+				while (node != NULL && !is_nil(node->right))
+					node = node->right;
+				return node;
 			}
 			
 			void _rotate_right(node_pointer	node) {
@@ -444,11 +446,11 @@ namespace ft {
 
 				y = node->left;
 				node->left = y->right;
-				if (!is_nil(y->right))
+				if (!this->is_nil(y->right))
 					y->right->parent = node;
 				y->parent = node->parent;
-				if (node->parent == NULL)
-					_root = y;
+				if (node->parent == 0x0)
+					this->root = y;
 				else if (node == node->parent->left)
 					node->parent->left = y;
 				else
@@ -456,16 +458,17 @@ namespace ft {
 				y->right = node;
 				node->parent = y;
 			}
+
 			void _rotate_left(node_pointer	node) {
 				node_pointer y;
 
 				y = node->right;
 				node->right = y->left;
-				if (!is_nil(y->left))
+				if (!this->is_nil(y->left))
 					y->left->parent = node;
 				y->parent = node->parent;
-				if (node->parent == NULL)
-					_root = y;
+				if (node->parent == 0x0)
+					this->root = y;
 				else if (node == node->parent->left)
 					node->parent->left = y;
 				else
@@ -475,21 +478,21 @@ namespace ft {
 			}
 
 			node_pointer _insert(node_pointer new_node) {
-				if (_root == _header)
-					_root = new_node;
+				if (this->root == this->header)
+					this->root = new_node;
 				else
-					_insert_to_node(_root, new_node);
+					this->_insert_to_node(this->root, new_node);
 				return new_node;	
 			}
 
 			node_pointer _insert_to_node(node_pointer root, node_pointer new_node) {
-				if (_compare(*new_node->value, *root->value)) {
+				if (this->compare(*new_node->value, *root->value)) {
 					if (!is_nil(root->left))
-						return (_insert_to_node(root->left, new_node));
+						return (this->_insert_to_node(root->left, new_node));
 					root->left = new_node;
 				} else {
 					if (!is_nil(root->right))
-						return (_insert_to_node(root->right, new_node));
+						return (this->_insert_to_node(root->right, new_node));
 					root->right = new_node;
 				}
 				new_node->parent = root;
@@ -497,86 +500,83 @@ namespace ft {
 			}
 			
 			node_pointer _insert_into_tree(node_pointer new_node, node_pointer where) {
-				if (_root == _header)
-					_root = new_node;
+				if (this->root == this->header)
+					this->root = new_node;
 				else
-					_insert_to_node(where, new_node);
+					this->_insert_to_node(where, new_node);
 				return (new_node);
 			}
 
-			void _insert_fixup(node_pointer node){
-				if (node != _root && node->parent != _root){
-					while (node != _root && !node->parent->is_black){
-						if (node->parent == node->parent->parent->left){
+			void _insert_fixup(node_pointer node) {
+				if (node != this->root && node->parent != this->root) {
+					while (node != this->root && !node->parent->is_black) {
+						if (node->parent == node->parent->parent->left) {
 							node_pointer uncle = node->parent->parent->right;
-							if (!uncle->is_black){
+							if (!uncle->is_black) {
 								node->parent->is_black = true;
 								uncle->is_black = true;
 								node->parent->parent->is_black = false;
 								node = node->parent->parent;
-							}
-							else {
-								if (node == node->parent->right){
+							} else {
+								if (node == node->parent->right) {
 									node = node->parent;
-									_rotate_left(node);
+									this->_rotate_left(node);
 								}
 								node->parent->is_black = true;
 								node->parent->parent->is_black = false;
-								_rotate_right(node->parent->parent);
+								this->_rotate_right(node->parent->parent);
 							}
-						}
-						else{
+						} else {
 							node_pointer uncle = node->parent->parent->left;
-							if (!uncle->is_black){
+							if (!uncle->is_black) {
 								node->parent->is_black = true;
 								uncle->is_black = true;
 								node->parent->parent->is_black = false;
 								node = node->parent->parent;
-							}
-							else{
+							} else {
 								if (node == node->parent->left){
 									node = node->parent;
-									_rotate_right(node);
+									this->_rotate_right(node);
 								}
 								node->parent->is_black = true;
 								node->parent->parent->is_black = false;
-								_rotate_left(node->parent->parent);
+								this->_rotate_left(node->parent->parent);
 							}
 						}
 					}
 				}
-				_root->is_black = true;
+				this->root->is_black = true;
 			}
 
 			bool is_nil(node_pointer node) const {
-				return node == _nil || node == _header;
+				return node == this->nil || node == this->header;
 			}
 
 			void clear_node(node_pointer node) {
-				if (node && !is_nil(node)) {
-					clear_node(node->right);
-					clear_node(node->left);
-					_val_alloc.destroy(node->value);
-					_val_alloc.deallocate(node->value, 1);
-					_node_alloc.deallocate(node, 1);
+				if (node && !this->is_nil(node)) {
+					this->clear_node(node->right);
+					this->clear_node(node->left);
+					this->val_alloc.destroy(node->value);
+					this->val_alloc.deallocate(node->value, 1);
+					this->node_alloc.deallocate(node, 1);
 				}
 			}
 		
 			void init_nil_head() {
-				_nil = _node_alloc.allocate(1);
-				_node_alloc.construct(_nil, Node<T>());
-				_nil->is_black = true;
-				_nil->is_nil = true;
-				_header = _node_alloc.allocate(1);
-				_node_alloc.construct(_header, Node<T>());
-				_header->value = _val_alloc.allocate(1);
-				_val_alloc.construct(_header->value, T());
-				_header->is_black = true;
+				this->nil = this->node_alloc.allocate(1);
+				this->node_alloc.construct(this->nil, Node<T>());
+				this->nil->is_black = true;
+				this->nil->is_nil = true;
+				this->header = this->node_alloc.allocate(1);
+				this->node_alloc.construct(this->header, Node<T>());
+				this->header->value = this->val_alloc.allocate(1);
+				this->val_alloc.construct(this->header->value, T());
+				this->header->is_black = true;
 			}
 
 			void transplant(node_pointer where, node_pointer what) {
-				if (where == _root)
-					_root = what;
+				if (where == this->root)
+					this->root = what;
 				else if (where == where->parent->left)
 					where->parent->left = what;
 				else
@@ -585,21 +585,22 @@ namespace ft {
 			}
 			
 			void  free_node(node_pointer node) {
-				_val_alloc.destroy(node->value);
-				_val_alloc.deallocate(node->value, 1);
-				_node_alloc.deallocate(node, 1);
+				this->val_alloc.destroy(node->value);
+				this->val_alloc.deallocate(node->value, 1);
+				this->node_alloc.deallocate(node, 1);
 			}
+			
 		private:
-			allocator_type				_val_alloc;
-			node_allocator				_node_alloc;
-			value_compare 				_compare;
-			node_pointer				_nil;
-			node_pointer				_header;
-			node_pointer				_root;
-			size_type					_size;
+			allocator_type				val_alloc;
+			node_allocator				node_alloc;
+			value_compare 				compare;
+			node_pointer				nil;
+			node_pointer				header;
+			node_pointer				root;
+			size_type					size;
 	};
 
-	template<class Content, class Compare, class Alloc> void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs){
+	template<class Content, class Compare, class Alloc> void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs) {
 		lhs.swap(rhs);
 	}
 }

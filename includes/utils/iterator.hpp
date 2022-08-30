@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 14:36:50 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/30 10:37:09 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ namespace ft {
 		return (rai1.base() - rai2.base());
 	}
 
-	/*template<class T> struct Node{
+	template<class T> struct Node{
 		public:
 			explicit Node(T *srcval = 0) :	value(srcval), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
 	
@@ -201,17 +201,17 @@ namespace ft {
 			typedef typename ft::iterator_traits<T*>::reference 		reference;
 			typedef typename ft::iterator_traits<T*>::pointer			pointer;
 			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
-			typedef Node<typename std::remove_const<value_type>::type >* node_pointer;
+			typedef Node<value_type>* 									node_pointer;
 
 			red_black_tree_iterator() {}
 
 			red_black_tree_iterator(void *node): _node(static_cast<node_pointer>(node)) {}
 
-			red_black_tree_iterator(const red_black_tree_iterator<typename std::remove_const<value_type>::type > & other) {
+			red_black_tree_iterator(const red_black_tree_iterator & other) {
 				*this = other;
 			}
 
-			red_black_tree_iterator& operator=(const red_black_tree_iterator<typename std::remove_const<value_type>::type>& other) {
+			red_black_tree_iterator& operator=(const red_black_tree_iterator & other) {
 				this->_node = other.node();
 				return *this;
 			}
@@ -314,7 +314,7 @@ namespace ft {
 
 	template<typename RBTI1, typename RBTI2> bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() != rhs.node());
-	} */
+	}
 }
 
 #endif

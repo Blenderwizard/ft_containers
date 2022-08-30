@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 16:28:15 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/30 10:01:40 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ namespace ft {
 			explicit vector(const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
 			
 			explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
-				this->first = _alloc.allocate(count);
+				this->first = this->_alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;
 				for(; count > 0; count--) {
-					_alloc.construct(this->last, value);
+					this->_alloc.construct(this->last, value);
 					(this->last)++;
 				}
 			}
@@ -53,11 +53,11 @@ namespace ft {
 			template<class InputIt> vector(InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
 				// TODO: Need to check if the Input Iterators are correct
 				difference_type count = dist(first, last);
-				this->first = _alloc.allocate(count);
+				this->first = this->_alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;
 				for (; count > 0; count--) {
-					_alloc.construct(this->last, *(first)++);
+					this->_alloc.construct(this->last, *(first)++);
 					(this->last)++;
 				}
 			}
@@ -68,7 +68,7 @@ namespace ft {
 
 			~vector() {
 				this->clear();
-				_alloc.deallocate(this->first, this->capacity());
+				this->_alloc.deallocate(this->first, this->capacity());
 			}
 
 			vector& operator=(const vector& other) {
@@ -94,7 +94,7 @@ namespace ft {
 					this->last = this->first;
 					this->vector_size = this->first + count;
 					for (; count > 0; count--) {
-						_alloc.construct(this->last, value);
+						this->_alloc.construct(this->last, value);
 						(this->last)++;
 					}
 				}
@@ -221,10 +221,10 @@ namespace ft {
 					this->vector_size = this->first + new_cap;
 					this->last = this->first;
 					for (;prev_start != prev_end; prev_start++) {
-						_alloc.construct(this->last, *prev_start);
+						this->_alloc.construct(this->last, *prev_start);
 						(this->last)++;
 					}
-					_alloc.deallocate(prev_start - prev_size, prev_cap);
+					this->_alloc.deallocate(prev_start - prev_size, prev_cap);
 				}
 			}
 
@@ -237,7 +237,7 @@ namespace ft {
 				size_type size = this->size();
 				for (size_type i = 0; i < size; i++) {
 					(this->last)--;
-					_alloc.destroy(last);
+					this->_alloc.destroy(last);
 				}
 			}
 
@@ -402,12 +402,12 @@ namespace ft {
 						this->reserve((int) 1);
 					}
 				}
-				_alloc.construct(this->last, value);
+				this->_alloc.construct(this->last, value);
 				(this->last)++;
 			}
 
 			void pop_back() {
-				_alloc.destroy(&this->back());
+				this->_alloc.destroy(&this->back());
 				(this->last)--;
 			}
 			

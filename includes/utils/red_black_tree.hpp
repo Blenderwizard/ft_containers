@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 12:49:37 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/30 13:23:05 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,28 @@ namespace ft {
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) {
+			inline RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) {
 				this->init_nil_head();
 				this->root = this->header;
 			}
 
-			RBTree() : root(0x0), val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), tree_size(0) {
+			inline RBTree() : root(0x0), val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), tree_size(0) {
 				this->init_nil_head();
 				this->root = this->header;
 			}
 
-			RBTree(const RBTree& src) :  compare(src.compare), root(0x0) {
+			inline RBTree(const RBTree& src) :  compare(src.compare), root(0x0) {
 				*this = src;
 			}
 
-			template<class InputIt> RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare& comp, const allocator_type& alloc = allocator_type()): val_alloc(alloc), node_alloc(node_allocator()), compare(comp) {
+			template<class InputIt> inline RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare& comp, const allocator_type& alloc = allocator_type()): val_alloc(alloc), node_alloc(node_allocator()), compare(comp) {
 				this->init_nil_head();
 				this->root = this->header;
 				for (; first != last; ++first)
 					this->insert(*first);
 			}
 		
-			RBTree& operator=(const RBTree & src){
+			inline RBTree& operator=(const RBTree & src){
 				if (this == &src)
 					return *this;
 				this->node_alloc = src.node_alloc;
@@ -82,7 +82,7 @@ namespace ft {
 				return *this;
 			}
 
-			~RBTree() {
+			inline ~RBTree() {
 				clear_node(this->root);
 				this->val_alloc.destroy(this->header->value);
 				this->val_alloc.deallocate(this->header->value, 1);
@@ -90,49 +90,49 @@ namespace ft {
 				this->node_alloc.deallocate(this->header, 1);
 			}
 
-			iterator end() {
+			inline iterator end() {
 				return (iterator(this->header));
 			}
 
-			const_iterator end() const {
+			inline const_iterator end() const {
 				return (const_iterator(this->header));
 			}
 
-			iterator begin() {
+			inline iterator begin() {
 				if (this->tree_size == 0)
 					return (iterator(this->header));
 				return (iterator(tree_min(this->root)));
 			}
 
-			const_iterator begin() const {
+			inline const_iterator begin() const {
 				if (this->tree_size == 0)
 					return (const_iterator(this->header));
 				return (const_iterator(tree_min(this->root)));
 			}
 
-			reverse_iterator rbegin() {
+			inline reverse_iterator rbegin() {
 				return (reverse_iterator(this->end()));
 			}	
 
-			const_reverse_iterator rbegin() const {
+			inline const_reverse_iterator rbegin() const {
 				return (const_reverse_iterator(this->end()));
 			}	
 
-			reverse_iterator rend() {
+			inline reverse_iterator rend() {
 				return (reverse_iterator(this->begin()));
 			}	
 
-			const_reverse_iterator rend() const {
+			inline const_reverse_iterator rend() const {
 				return (const_reverse_iterator(this->begin()));
 			}	
 
-			pointer	create_value(const value_type &value){
+			inline pointer	create_value(const value_type &value){
 				pointer new_val = this->val_alloc.allocate(1);
 				this->val_alloc.construct(new_val, value);
 				return new_val;
 			}
 
-			node_pointer copy_node(node_pointer other) {
+			inline node_pointer copy_node(node_pointer other) {
 				node_pointer new_node = this->node_alloc.allocate(1);
 				this->node_alloc.construct(new_node, Node<T>());
 				new_node->is_black = other->is_black;
@@ -144,7 +144,7 @@ namespace ft {
 				return (new_node);
 			}
 		
-			void copy_child(node_pointer my_node, node_pointer other) {
+			inline void copy_child(node_pointer my_node, node_pointer other) {
 				if (other->left->is_nil)
 					my_node->left = this->nil;
 				else {
@@ -164,7 +164,7 @@ namespace ft {
 				}
 			}
 
-			node_pointer search(const value_type &value, node_pointer node) const {
+			inline node_pointer search(const value_type &value, node_pointer node) const {
 				if(!node || this->is_nil(node))
 					return 0x0;
 				if (this->compare(value, *node->value))
@@ -174,21 +174,21 @@ namespace ft {
 				return node;
 			}
 
-			iterator find(const value_type& value) {
+			inline iterator find(const value_type& value) {
 				node_pointer ret = this->search(value, this->root);
 				if (ret == 0x0)
 					return this->end();
 				return iterator(ret);
 			}
 
-			const_iterator find(const value_type& value) const {
+			inline const_iterator find(const value_type& value) const {
 				node_pointer ret = this->search(value, this->root);
 				if (ret == 0x0)
 					return this->end();
 				return const_iterator(ret);
 			}
 			
-			ft::pair<iterator, bool> insert(value_type const &value) {
+			inline ft::pair<iterator, bool> insert(value_type const &value) {
 				node_pointer find = this->search(value, this->root);
 				if (find)
 					return ft::pair<iterator, bool>(iterator(find), false);
@@ -206,7 +206,7 @@ namespace ft {
 				return ret;
 			} 
 
-			iterator insert(iterator position, const value_type& value) {
+			inline iterator insert(iterator position, const value_type& value) {
 				node_pointer new_node = search(value,this->root);
 				if (new_node)
 					return (iterator(new_node));
@@ -236,12 +236,12 @@ namespace ft {
 				return (iterator(new_node));
 			}
 			
-			template<class InputIt> void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
+			template<class InputIt> inline void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
 				for (; first != last; first++)
 					this->insert(*first);
 			}
 
-			void erase(iterator pos) {
+			inline void erase(iterator pos) {
 				node_pointer y = pos.node(), x, for_free = y;
 				bool y_original_is_black = y->is_black;
 				if (this->is_nil(y->left)) {
@@ -282,19 +282,19 @@ namespace ft {
 				}
 			}
 
-			size_type erase(const value_type& value) {
+			inline size_type erase(const value_type& value) {
 				node_pointer ret = search(value, this->root);
 				if (ret)
 					this->erase(iterator(ret));
 				return (ret != 0x0);
 			}
 
-			void erase(iterator first, iterator last) {
+			inline void erase(iterator first, iterator last) {
 				while (first != last)
 					this->erase(first++);
 			}
 
-			void erase_fixup(node_pointer x) {
+			inline void erase_fixup(node_pointer x) {
 				node_pointer brother;
 				while (x != this->root && x->is_black) {
 					if (x == x->parent->left) {
@@ -349,34 +349,34 @@ namespace ft {
 				}
 			}
 
-			size_type size() const {
+			inline size_type size() const {
 				return (this->tree_size);
 			}
 
-			size_type max_size() const {
+			inline size_type max_size() const {
 				return (this->val_alloc.max_size());
 			}
 			
-			bool empty() const {
+			inline bool empty() const {
 				return (this->tree_size == 0);
 			}
 
-			value_compare value_comp() const {
+			inline value_compare value_comp() const {
 				return (this->compare);
 			}
 			
-			void clear() {
+			inline void clear() {
 				this->clear_node(this->root);
 				this->root = this->header;
 				this->header->parent = 0x0;
 				this->tree_size = 0;
 			}
 			
-			size_type count(const value_type& value) const {
+			inline size_type count(const value_type& value) const {
 				return (this->find(value) != this->end());
 			}
 
-			iterator lower_bound(const value_type& value) {
+			inline iterator lower_bound(const value_type& value) {
 				iterator last = this->end();
 				for (iterator first = this->begin(); first != last; ++first) {
 					if (!this->compare(*first, value))
@@ -385,7 +385,7 @@ namespace ft {
 				return (last);
 			}
 
-			const_iterator lower_bound(const value_type& value) const{
+			inline const_iterator lower_bound(const value_type& value) const{
 				const_iterator last = this->end();
 				for (const_iterator first = this->begin(); first != last; ++first){
 					if (!this->compare(*first, value))
@@ -394,7 +394,7 @@ namespace ft {
 				return (last);
 			}
 
-			iterator upper_bound(const value_type& value) {
+			inline iterator upper_bound(const value_type& value) {
 				iterator last = this->end();
 				for (iterator first = this->begin(); first != last; ++first){
 					if(this->compare(value, *first))
@@ -403,7 +403,7 @@ namespace ft {
 				return (last);
 			}
 
-			const_iterator upper_bound(const value_type& value) const {
+			inline const_iterator upper_bound(const value_type& value) const {
 				const_iterator last = this->end();
 				for (const_iterator first = this->begin(); first != last; ++first){
 					if (this->compare(value, *first))
@@ -412,7 +412,7 @@ namespace ft {
 				return (last);
 			}
 
-			void swap(RBTree &other) {
+			inline void swap(RBTree &other) {
 				std::swap(this->root, other.root);
 				std::swap(this->nil, other.nil);
 				std::swap(this->header, other.header);
@@ -422,28 +422,28 @@ namespace ft {
 				std::swap(this->compare, other.compare);
 			}
 
-			ft::pair<iterator, iterator> equal_range(const value_type &value) {
+			inline ft::pair<iterator, iterator> equal_range(const value_type &value) {
 				return (ft::make_pair(this->lower_bound(value), this->upper_bound(value)));
 			}
 			
-			allocator_type get_allocator() const {
+			inline allocator_type get_allocator() const {
 				return (this->val_alloc);
 			}
 
 		protected:
-			node_pointer _tree_min(node_pointer node) const {
+			inline node_pointer _tree_min(node_pointer node) const {
 				while (node != 0x0 && !is_nil(node->left))
 					node = node->left;
 				return node;
 			}
 			
-			node_pointer _tree_max(node_pointer node) const {
+			inline node_pointer _tree_max(node_pointer node) const {
 				while (node != NULL && !is_nil(node->right))
 					node = node->right;
 				return node;
 			}
 			
-			void _rotate_right(node_pointer	node) {
+			inline void _rotate_right(node_pointer	node) {
 				node_pointer y;
 
 				y = node->left;
@@ -461,7 +461,7 @@ namespace ft {
 				node->parent = y;
 			}
 
-			void _rotate_left(node_pointer	node) {
+			inline void _rotate_left(node_pointer	node) {
 				node_pointer y;
 
 				y = node->right;
@@ -479,7 +479,7 @@ namespace ft {
 				node->parent = y;
 			}
 
-			node_pointer _insert(node_pointer new_node) {
+			inline node_pointer _insert(node_pointer new_node) {
 				if (this->root == this->header)
 					this->root = new_node;
 				else
@@ -487,7 +487,7 @@ namespace ft {
 				return new_node;	
 			}
 
-			node_pointer _insert_to_node(node_pointer root, node_pointer new_node) {
+			inline node_pointer _insert_to_node(node_pointer root, node_pointer new_node) {
 				if (this->compare(*new_node->value, *root->value)) {
 					if (!is_nil(root->left))
 						return (this->_insert_to_node(root->left, new_node));
@@ -501,7 +501,7 @@ namespace ft {
 				return (new_node);
 			}
 			
-			node_pointer _insert_into_tree(node_pointer new_node, node_pointer where) {
+			inline node_pointer _insert_into_tree(node_pointer new_node, node_pointer where) {
 				if (this->root == this->header)
 					this->root = new_node;
 				else
@@ -509,7 +509,7 @@ namespace ft {
 				return (new_node);
 			}
 
-			void _insert_fixup(node_pointer node) {
+			inline void _insert_fixup(node_pointer node) {
 				if (node != this->root && node->parent != this->root) {
 					while (node != this->root && !node->parent->is_black) {
 						if (node->parent == node->parent->parent->left) {
@@ -550,11 +550,11 @@ namespace ft {
 				this->root->is_black = true;
 			}
 
-			bool is_nil(node_pointer node) const {
+			inline bool is_nil(node_pointer node) const {
 				return node == this->nil || node == this->header;
 			}
 
-			void clear_node(node_pointer node) {
+			inline void clear_node(node_pointer node) {
 				if (node && !this->is_nil(node)) {
 					this->clear_node(node->right);
 					this->clear_node(node->left);
@@ -564,7 +564,7 @@ namespace ft {
 				}
 			}
 		
-			void init_nil_head() {
+			inline void init_nil_head() {
 				this->nil = this->node_alloc.allocate(1);
 				this->node_alloc.construct(this->nil, Node<T>());
 				this->nil->is_black = true;
@@ -576,7 +576,7 @@ namespace ft {
 				this->header->is_black = true;
 			}
 
-			void transplant(node_pointer where, node_pointer what) {
+			inline void transplant(node_pointer where, node_pointer what) {
 				if (where == this->root)
 					this->root = what;
 				else if (where == where->parent->left)
@@ -586,7 +586,7 @@ namespace ft {
 				what->parent = where->parent;
 			}
 			
-			void  free_node(node_pointer node) {
+			inline void free_node(node_pointer node) {
 				this->val_alloc.destroy(node->value);
 				this->val_alloc.deallocate(node->value, 1);
 				this->node_alloc.deallocate(node, 1);
@@ -602,7 +602,7 @@ namespace ft {
 			size_type					tree_size;
 	};
 
-	template<class Content, class Compare, class Alloc> void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs) {
+	template<class Content, class Compare, class Alloc> inline void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs) {
 		lhs.swap(rhs);
 	}
 }

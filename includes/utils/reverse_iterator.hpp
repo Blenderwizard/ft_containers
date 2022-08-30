@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:45:42 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 12:49:48 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/30 14:23:44 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,16 @@ namespace ft {
 			
 			inline explicit reverse_iterator(iterator_type x): current(x) { };
 
-			template<class U> inline reverse_iterator(const reverse_iterator<U> & other) : current(other.current) { };
+			template<class U> inline reverse_iterator(const reverse_iterator<U> & other) : current(other.base()) { };
 
 			template<class U> inline reverse_iterator & operator=(const reverse_iterator<U> & other) {
-				current = other.current;
+				current = other.base();
 				return (*this);
 			};
+
+			inline operator reverse_iterator<const Iter>() const {
+				return (this->current);
+			}
 
 			inline iterator_type base() const {
 				return (current);
@@ -87,6 +91,10 @@ namespace ft {
 			inline reverse_iterator & operator-=(difference_type n) {
 				current += n;
 				return (*this);
+			}
+
+			inline reference operator[](const difference_type & count) {
+				return (*(this->current + count));
 			}
 		protected:
 			iterator_type	current;

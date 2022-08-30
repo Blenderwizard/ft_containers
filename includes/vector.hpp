@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/30 10:01:40 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/30 11:12:41 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <memory>
 #include <algorithm>
 #include <functional>
+#include <stdexcept>
 
 #include "./utils/enable_if.hpp"
 #include "./utils/iterator.hpp"
@@ -113,13 +114,13 @@ namespace ft {
 
 			reference at(size_type pos) {
 				if (pos >= this->size())
-					throw std::exception();
+					throw std::out_of_range("vector");
 				return ((*this)[pos]);
 			}
 
 			const_reference at(size_type pos) const {
 				if (pos >= this->size())
-					throw std::exception();
+					throw std::out_of_range("vector");
 				return ((*this)[pos]);
 			}
 
@@ -305,7 +306,7 @@ namespace ft {
 						new_vector_size = new_first + new_capacity;
 					}
 					pointer new_last = new_first + this->size() + count;
-					for (size_type i = 0; i < (&(*pos) - this->first); i++)
+					for (difference_type i = 0; i < (&(*pos) - this->first); i++)
 						this->_alloc.construct(new_first + i, *(this->first + i));
 					for (size_type i = 0; i < count; i++)
 						this->_alloc.construct(new_first + loc + i, value);
@@ -409,19 +410,6 @@ namespace ft {
 			void pop_back() {
 				this->_alloc.destroy(&this->back());
 				(this->last)--;
-			}
-			
-			void resize(size_type count) {
-				if (count > this->max_size())
-					throw (std::length_error("vector::resize"));
-				else if (count < this->size()) {
-					while (this->size() > count) {
-						this->last--;
-						this->_alloc.destroy(this->last);
-					}
-				}
-				else
-					this->insert(this->end(), count - this->size(), value_type());
 			}
 
 			void resize (size_type count, value_type val = value_type()) {

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/30 10:37:09 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/08/30 11:16:19 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace ft {
 
 			random_access_iterator(const random_access_iterator& rai): current(rai.current) {}
 		
-			random_access_iterator & operator=(const random_access_iterator & rai) {
+			random_access_iterator<value_type> & operator=(const random_access_iterator & rai) {
 				if (this != &rai)
 					this->current = rai.current;
 				return (*this);
@@ -91,7 +91,7 @@ namespace ft {
 				return (*this);
 			}
 
-			reference operator[](difference_type & count) {
+			reference operator[](const difference_type & count) {
 				return (*(this->current + count));
 			}
 		

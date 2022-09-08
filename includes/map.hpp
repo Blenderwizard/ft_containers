@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/29 12:48:20 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:13:42 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ namespace ft {
 					typedef value_type	first_argument_type;
 					typedef value_type  second_argument_type;
 
-					bool operator()( const value_type & lhs, const value_type & rhs) const {
+					inline bool operator()( const value_type & lhs, const value_type & rhs) const {
 						return (comp(lhs.first, rhs.first));
 					}
 				protected:
@@ -62,135 +62,136 @@ namespace ft {
 			~map();
 			map & operator=(const map& other);
 
-			allocator_type get_allocator() const {
+			inline allocator_type get_allocator() const {
 				return (this->tree.get_allocator());
 			}
 
-			T & at(const Key& key) {
+			inline T & at(const Key& key) {
 				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
 					throw std::out_of_range("map::at: key not found");
 				return (res->second);
 			}
 
-			const T & at(const Key & key) const {
+			inline const T & at(const Key & key) const {
 				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
 					throw std::out_of_range("map::at: key not found");
 				return (res->second);
 			}
+			
 			T & operator[](const Key & key);
 
-			iterator begin() {
+			inline iterator begin() {
 				return (tree.begin());
 			}
 
-			const_iterator begin() const {
+			inline const_iterator begin() const {
 				return (tree.begin());
 			}
 
-			iterator end() {
+			inline iterator end() {
 				return (tree.end());
 			}
 
-			const_iterator end() const {
+			inline const_iterator end() const {
 				return (tree.end());
 			}
 
-			reverse_iterator rbegin() {
+			inline reverse_iterator rbegin() {
 				return (tree.rbegin());
 			}
 
-			const_reverse_iterator rbegin() const {
+			inline const_reverse_iterator rbegin() const {
 				return (tree.rbegin());
 			}
 
-			reverse_iterator rend() {
+			inline reverse_iterator rend() {
 				return (tree.end());
 			}
 
-			const_reverse_iterator rend() const {
+			inline const_reverse_iterator rend() const {
 				return (tree.end());
 			}
 			
-			bool empty() const {
+			inline bool empty() const {
 				return (this->tree.empty());
 			}
 
-			size_type size() const {
+			inline size_type size() const {
 				return (this->tree.size());
 			}
 
-			size_type max_size() const {
+			inline size_type max_size() const {
 				return (this->tree.max_size());
 			}
 
-			void clear() {
+			inline void clear() {
 				this->tree.clear();
 			}
 
-			ft::pair<iterator, bool> insert(const value_type & value) {
+			inline ft::pair<iterator, bool> insert(const value_type & value) {
 				return (this->tree.insert(value));
 			}
 
-			iterator insert(iterator hint, const value_type & value) {
+			inline iterator insert(iterator hint, const value_type & value) {
 				return (this->tree.insert(hint, value));
 			}
 
 			template<class InputIt> void insert(InputIt first, InputIt last);
 
-			void erase(iterator pos) {
+			inline void erase(iterator pos) {
 				this->tree(erase);
 			}
 
-			size_type erase(const Key & key) {
+			inline size_type erase(const Key & key) {
 				return (this->tree.erase(max_size(key, mapped_type())));
 			}
 
-			void swap(map & other) {
+			inline void swap(map & other) {
 				std::swap(this->compare, other.compare);
 				this->tree.swap(other.tree);
 			}
 
-			size_type count (const Key & key) const;
+			inline size_type count (const Key & key) const;
 
-			iterator find(const Key & key) {
+			inline iterator find(const Key & key) {
 				return (this->tree.find(make_pair(key, mapped_type())));
 			}
 
-			const_iterator find(const Key & key) const {
+			inline const_iterator find(const Key & key) const {
 				return (this->tree.find(make_pair(key, mapped_type())));
 			}
 
-			ft::pair<iterator, iterator> equal_range(const Key &key) {
+			inline ft::pair<iterator, iterator> equal_range(const Key &key) {
 				return (this->tree.equal_range(make_pair(key, mapped_type())));
 			}
 
-			ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
+			inline ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
 				return (this->tree.equal_range(make_pair(key, mapped_type())));
 			}
 
-			iterator lower_bound(const Key & key) {
+			inline iterator lower_bound(const Key & key) {
 				return (this->tree.lower_bound(make_pair(key, mapped_type())));
 			}
 
-			const_iterator lower_bound(const Key & key) const {
+			inline const_iterator lower_bound(const Key & key) const {
 				return (this->tree.lower_bound(make_pair(key, mapped_type())));
 			}
 
-			iterator upper_bound(const Key & key) {
+			inline iterator upper_bound(const Key & key) {
 				return (this->tree.upper_bound(make_pair(key, mapped_type())));
 			}
 
-			const_iterator upper_bound(const Key & key) const {
+			inline const_iterator upper_bound(const Key & key) const {
 				return (this->tree.upper_bound(make_pair(key, mapped_type())));
 			}
 
-			key_compare key_comp() const {
+			inline key_compare key_comp() const {
 				return (this->compare);
 			}
 
-			value_compare value_comp() const {
+			inline value_compare value_comp() const {
 				return (this->tree.value_comp());
 			}
 

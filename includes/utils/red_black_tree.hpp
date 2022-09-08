@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/30 13:23:05 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/02 15:10:58 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include "reverse_iterator.hpp"
 
 namespace ft {
-	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree{
+	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree {
 		public:
 			typedef T															value_type;
 			typedef Compare														value_compare;

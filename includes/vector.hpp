@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/08/31 13:55:32 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 11:18:41 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include "./utils/equal.hpp"
 
 namespace ft {
-	template<class T, class Allocator = std::allocator<T> > class vector {
+	template <class T, class Allocator = std::allocator<T> > class vector {
 		public:
 			typedef T															value_type;
 			typedef Allocator													allocator_type;
@@ -41,7 +41,7 @@ namespace ft {
 
 			inline explicit vector(const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
 			
-			inline explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
+			inline explicit vector(size_type count, const T & value = T(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
 				this->first = this->_alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;
@@ -51,7 +51,7 @@ namespace ft {
 				}
 			}
 
-			template<class InputIt> inline vector(InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
+			template<class InputIt> inline vector(InputIt first, InputIt last, const Allocator & alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
 				// TODO: Need to check if the Input Iterators are correct
 				difference_type count = dist(first, last);
 				this->first = this->_alloc.allocate(count);
@@ -245,7 +245,7 @@ namespace ft {
 				}
 			}
 
-			inline iterator insert(iterator pos, const T&value) {
+			inline iterator insert(iterator pos, const T & value) {
 				// if (pos < this->begin() || pos > this->end())
 				// 	throw std::exception();
 				size_type loc = &(*pos) - this->first;
@@ -279,7 +279,7 @@ namespace ft {
 				return (iterator(this->first + loc));
 			}
 
-			inline void insert(iterator pos, size_type count, const T& value) {
+			inline void insert(iterator pos, size_type count, const T & value) {
 				if (count == 0)
 					return;
 				if (count > this->max_size())
@@ -398,7 +398,7 @@ namespace ft {
 				return (iterator(loc));
 			}
 
-			inline void push_back(const T& value) {
+			inline void push_back(const T & value) {
 				if (this->last == vector_size) {
 					if (this->size() > 0) {
 						this->reserve((int) this->size() * 2);
@@ -430,7 +430,7 @@ namespace ft {
 					this->insert(this->end(), count - this->size(), val);
 			}
 
-			inline void swap(vector& other) {
+			inline void swap(vector & other) {
 				if (other != *this) {
 					pointer save_start = other.first;
 					pointer save_end = other.last;
@@ -463,17 +463,17 @@ namespace ft {
 			}
 	};
 
-	template<class T, class Alloc> inline bool operator==(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+	template <class T, class Alloc> inline bool operator==(const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
 		if (vec1.size() != vec2.size())
 			return (false);
 		return (ft::equal(vec1.begin(), vec1.end(), vec2.begin()));
 	}
 
-	template<class T, class Alloc> inline bool operator!=(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+	template <class T, class Alloc> inline bool operator!=(const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
 		return (!(vec1 == vec2));
 	}
 
-	template <class T, class Alloc> inline bool operator<(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+	template <class T, class Alloc> inline bool operator<(const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
 		typename ft::vector<T, Alloc>::const_iterator first1 = vec1.begin();
 		typename ft::vector<T, Alloc>::const_iterator last1 = vec1.end();
 		typename ft::vector<T, Alloc>::const_iterator first2 = vec2.begin();
@@ -489,19 +489,19 @@ namespace ft {
 		return (first2 != last2);
 	}
 
-	template<class T, class Alloc> inline bool operator<=(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+	template <class T, class Alloc> inline bool operator<=(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc> & vec2) {
 		return (!(vec2 < vec1));
 	}
 
-	template <class T, class Alloc> inline bool operator>(const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+	template <class T, class Alloc> inline bool operator>(const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
 		return (vec2 < vec1);
 	}
 
-	template <class T, class Alloc> inline bool operator>= (const ft::vector<T, Alloc>& vec1, const ft::vector<T, Alloc>& vec2) {
+	template <class T, class Alloc> inline bool operator>= (const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
 		return (!(vec1 < vec2));
 	}
 	
-	template <class T, class Alloc> inline void swap (ft::vector<T,Alloc>& vec1, ft::vector<T,Alloc>& vec2) {
+	template <class T, class Alloc> inline void swap (ft::vector<T,Alloc> & vec1, ft::vector<T,Alloc> & vec2) {
 		vec1.swap(vec2);
 	}
 }

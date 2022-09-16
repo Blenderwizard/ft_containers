@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/02 15:10:58 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 11:22:20 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include "reverse_iterator.hpp"
 
 namespace ft {
-	template<class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree {
+	template <class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree {
 		public:
 			typedef T															value_type;
 			typedef Compare														value_compare;
@@ -41,7 +41,7 @@ namespace ft {
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			inline RBTree(const Compare &comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) {
+			inline RBTree(const Compare & comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) {
 				this->init_nil_head();
 				this->root = this->header;
 			}
@@ -51,11 +51,11 @@ namespace ft {
 				this->root = this->header;
 			}
 
-			inline RBTree(const RBTree& src) :  compare(src.compare), root(0x0) {
+			inline RBTree(const RBTree & src) :  compare(src.compare), root(0x0) {
 				*this = src;
 			}
 
-			template<class InputIt> inline RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare& comp, const allocator_type& alloc = allocator_type()): val_alloc(alloc), node_alloc(node_allocator()), compare(comp) {
+			template<class InputIt> inline RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare & comp, const allocator_type& alloc = allocator_type()): val_alloc(alloc), node_alloc(node_allocator()), compare(comp) {
 				this->init_nil_head();
 				this->root = this->header;
 				for (; first != last; ++first)
@@ -164,7 +164,7 @@ namespace ft {
 				}
 			}
 
-			inline node_pointer search(const value_type &value, node_pointer node) const {
+			inline node_pointer search(const value_type & value, node_pointer node) const {
 				if(!node || this->is_nil(node))
 					return 0x0;
 				if (this->compare(value, *node->value))
@@ -174,21 +174,21 @@ namespace ft {
 				return node;
 			}
 
-			inline iterator find(const value_type& value) {
+			inline iterator find(const value_type & value) {
 				node_pointer ret = this->search(value, this->root);
 				if (ret == 0x0)
 					return this->end();
 				return iterator(ret);
 			}
 
-			inline const_iterator find(const value_type& value) const {
+			inline const_iterator find(const value_type & value) const {
 				node_pointer ret = this->search(value, this->root);
 				if (ret == 0x0)
 					return this->end();
 				return const_iterator(ret);
 			}
 			
-			inline ft::pair<iterator, bool> insert(value_type const &value) {
+			inline ft::pair<iterator, bool> insert(value_type const & value) {
 				node_pointer find = this->search(value, this->root);
 				if (find)
 					return ft::pair<iterator, bool>(iterator(find), false);
@@ -206,7 +206,7 @@ namespace ft {
 				return ret;
 			} 
 
-			inline iterator insert(iterator position, const value_type& value) {
+			inline iterator insert(iterator position, const value_type & value) {
 				node_pointer new_node = search(value,this->root);
 				if (new_node)
 					return (iterator(new_node));
@@ -236,7 +236,7 @@ namespace ft {
 				return (iterator(new_node));
 			}
 			
-			template<class InputIt> inline void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
+			template <class InputIt> inline void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
 				for (; first != last; first++)
 					this->insert(*first);
 			}
@@ -602,7 +602,7 @@ namespace ft {
 			size_type					tree_size;
 	};
 
-	template<class Content, class Compare, class Alloc> inline void swap(const  RBTree<Content, Compare, Alloc>& lhs, const  RBTree<Content, Compare, Alloc>& rhs) {
+	template<class Content, class Compare, class Alloc> inline void swap(const  RBTree<Content, Compare, Alloc> & lhs, const  RBTree<Content, Compare, Alloc> & rhs) {
 		lhs.swap(rhs);
 	}
 }

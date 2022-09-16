@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/08 16:13:42 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 11:19:06 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,32 +55,42 @@ namespace ft {
 					value_compare(Compare c): c(c) { };
 			};
 			
-			inline map();
+			inline map() {
+
+			}
+
 			explicit map(const Compare & comp, const Allocator & alloc = Allocator());
 			template<class InputIt> map(InputIt first, InputIt last, const Compare & comp, const Allocator & alloc = Allocator());
 			map(const map & other);
+
 			~map();
-			map & operator=(const map& other);
+
+			map & operator=(const map & other);
 
 			inline allocator_type get_allocator() const {
 				return (this->tree.get_allocator());
 			}
 
-			inline T & at(const Key& key) {
+			inline T & at(const Key & key) {
 				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
-					throw std::out_of_range("map::at: key not found");
+					throw std::out_of_range("map:: key not found");
 				return (res->second);
 			}
 
 			inline const T & at(const Key & key) const {
 				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
-					throw std::out_of_range("map::at: key not found");
+					throw std::out_of_range("map:: key not found");
 				return (res->second);
 			}
 			
-			T & operator[](const Key & key);
+			T & operator[](const Key & key) {
+				// iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
+				// if (res == this->tree.end())
+				// 	throw std::out_of_range("map:: key not found");
+				// return (res->second);
+			}
 
 			inline iterator begin() {
 				return (tree.begin());
@@ -153,7 +163,12 @@ namespace ft {
 				this->tree.swap(other.tree);
 			}
 
-			inline size_type count (const Key & key) const;
+			inline size_type count(const Key & key) const {
+				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
+				if (res == this->tree.end())
+					return (0);
+				return (1);
+			}
 
 			inline iterator find(const Key & key) {
 				return (this->tree.find(make_pair(key, mapped_type())));
@@ -167,7 +182,7 @@ namespace ft {
 				return (this->tree.equal_range(make_pair(key, mapped_type())));
 			}
 
-			inline ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
+			inline ft::pair<const_iterator, const_iterator> equal_range(const Key & key) const {
 				return (this->tree.equal_range(make_pair(key, mapped_type())));
 			}
 
@@ -200,6 +215,48 @@ namespace ft {
 			tree_type		tree;
 			key_compare		compare;
 	};
+
+	template <class Key, class T, class Compare, class Alloc> inline bool operator==(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+		if (vec1.size() != vec2.size())
+			return (false);
+		return (ft::equal(vec1.begin(), vec1.end(), vec2.begin()));
+	}
+
+	template <class Key, class T, class Compare, class Alloc> inline bool operator!=(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+		return (!(vec1 == vec2));
+	}
+
+	template <class Key, class T, class Compare, class Alloc> inline bool operator<(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator first1 = vec1.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator last1 = vec1.end();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator first2 = vec2.begin();
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator last2 = vec2.end();
+		while (first1 != last1) {
+			if (first2 == last2 || *first2 < *first1)
+				return false;
+			else if (*first1 < *first2)
+				return true;
+			++first1;
+			++first2;
+		}
+		return (first2 != last2);
+	}
+
+	template <class Key, class T, class Compare, class Alloc> inline bool operator<=(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+		return (!(vec2 < vec1));
+	}
+
+	template <class Key, class T, class Compare, class Alloc> inline bool operator>(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+		return (vec2 < vec1);
+	}
+
+	template <class Key, class T, class Compare, class Alloc> inline bool operator>= (const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+		return (!(vec1 < vec2));
+	}
+	
+	template <class Key, class T, class Compare, class Alloc> inline void swap (ft::map<T,Alloc>& vec1, ft::map<T,Alloc>& vec2) {
+		vec1.swap(vec2);
+	}
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/08 10:48:50 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 11:26:58 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ namespace ft {
 		return (rai1.base() == rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline bool operator==(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline bool operator==(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() == rai2.base());
 	}
 
@@ -117,7 +117,7 @@ namespace ft {
 		return (rai1.base() != rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline bool operator!=(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline bool operator!=(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() != rai2.base());
 	}
 
@@ -125,7 +125,7 @@ namespace ft {
 		return (rai1.base() < rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline bool operator<(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline bool operator<(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() < rai2.base());
 	}
 
@@ -133,7 +133,7 @@ namespace ft {
 		return (rai1.base() > rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline bool operator>(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline bool operator>(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() > rai2.base());
 	}
 
@@ -141,7 +141,7 @@ namespace ft {
 		return (rai1.base() <= rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline bool operator<=(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline bool operator<=(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() <= rai2.base());
 	}
 
@@ -149,27 +149,27 @@ namespace ft {
 		return (rai1.base() >= rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline bool operator>=(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline bool operator>=(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() >= rai2.base());
 	}
 
-	template<typename T> inline ft::random_access_iterator<T> operator+(typename ft::random_access_iterator<T>::difference_type count, typename ft::random_access_iterator<T> & rai) {
+	template <typename T> inline ft::random_access_iterator<T> operator+(typename ft::random_access_iterator<T>::difference_type count, typename ft::random_access_iterator<T> & rai) {
 		return (&(*rai) + count);
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline typename ft::random_access_iterator<T_RAI1>::difference_type operator+(const ft::random_access_iterator<T_RAI1> rai1, const ft::random_access_iterator<T_RAI2> rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline typename ft::random_access_iterator<T_RAI1>::difference_type operator+(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() + rai2.base());
 	}
 
-	template <typename T> inline typename ft::random_access_iterator<T>::difference_type operator-(const ft::random_access_iterator<T> rai1, const ft::random_access_iterator<T> rai2) {
+	template <typename T> inline typename ft::random_access_iterator<T>::difference_type operator-(const ft::random_access_iterator<T> & rai1, const ft::random_access_iterator<T> & rai2) {
 		return (rai1.base() - rai2.base());
 	}
 
-	template<typename T_RAI1, typename T_RAI2> inline typename ft::random_access_iterator<T_RAI1>::difference_type operator-(const ft::random_access_iterator<T_RAI1> rai1, const ft::random_access_iterator<T_RAI2> rai2) {
+	template <typename T_RAI1, typename T_RAI2> inline typename ft::random_access_iterator<T_RAI1>::difference_type operator-(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() - rai2.base());
 	}
 
-	template<class T> struct Node{
+	template <class T> struct Node {
 		public:
 			inline explicit Node(T *srcval = 0) :	value(srcval), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
 	
@@ -182,7 +182,7 @@ namespace ft {
 				this->left = other.left;
 			};
 
-			inline Node& operator=(const Node& other) {
+			inline Node & operator=(const Node & other) {
 				this->is_black = other.is_black;
 				this->value = other.value;
 				this->is_nil = other.is_nil;
@@ -194,15 +194,15 @@ namespace ft {
 
 			inline virtual ~Node(){}
 		private:
-			T	*value;
-			Node*	parent;
-			Node*	left;
-			Node*	right;	
+			T *		value;
+			Node *	parent;
+			Node *	left;
+			Node *	right;	
 			bool	is_black;
 			bool	is_nil;
 	};
 
-	template<typename T> class red_black_tree_iterator {
+	template <typename T> class red_black_tree_iterator {
 		public:
 			typedef std::bidirectional_iterator_tag						iterator_category;
 			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
@@ -219,7 +219,7 @@ namespace ft {
 				*this = other;
 			}
 
-			inline red_black_tree_iterator& operator=(const red_black_tree_iterator & other) {
+			inline red_black_tree_iterator & operator=(const red_black_tree_iterator & other) {
 				this->_node = other.node();
 				return *this;
 			}
@@ -236,7 +236,7 @@ namespace ft {
 				return this->_node->value;
 			}
 
-			inline red_black_tree_iterator& operator++() {
+			inline red_black_tree_iterator & operator++() {
 				if (this->_node->right && !_node->right->is_nil) {
 					this->_node = tree_min(_node->right);
 				}
@@ -267,7 +267,7 @@ namespace ft {
 				return temp;
 			}
 
-			inline red_black_tree_iterator& operator--() {
+			inline red_black_tree_iterator & operator--() {
 				if (_node->left && !_node->left->is_nil) {
 					_node = tree_max(_node->left);
 				}
@@ -320,11 +320,11 @@ namespace ft {
 
 	// Out of class defs for red black tree iterators
 
-	template<typename RBTI1, typename RBTI2> inline bool operator==(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
+	template <typename RBTI1, typename RBTI2> inline bool operator==(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() == rhs.node());
 	}
 
-	template<typename RBTI1, typename RBTI2> inline bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
+	template <typename RBTI1, typename RBTI2> inline bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
 		return (lhs.node() != rhs.node());
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 16:07:10 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/05/10 10:39:34 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 11:22:50 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #define PAIR_HPP
 
 namespace ft {
-	template<class T1, class T2> struct pair {
+	template <class T1, class T2> struct pair {
 		public:
 			typedef T1	first_type;
 			typedef T2	second_type;
@@ -29,7 +29,7 @@ namespace ft {
 				this->second = y;
 			}
 
-			template<class U1, class U2> inline pair(const pair<U1, U2> & p) {
+			template <class U1, class U2> inline pair(const pair<U1, U2> & p) {
 				this->first = p.first;
 				this->second = p.second;
 			}
@@ -41,31 +41,31 @@ namespace ft {
 			}
 	};
 
-	template<class T1, class T2> inline bool operator==(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
+	template <class T1, class T2> inline bool operator==(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return p1.first == p2.first && p1.second == p2.second;
 	}
 
-	template<class T1, class T2> inline bool operator!=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
+	template <class T1, class T2> inline bool operator!=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return !(p1 == p2);
 	}
 
-	template<class T1, class T2> inline bool operator<(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
+	template <class T1, class T2> inline bool operator<(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return p1.first < p2.first || (!(p2.first < p1.first) && p1.second < p2.second);
 	}
 
-	template<class T1, class T2> inline bool operator<=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
+	template <class T1, class T2> inline bool operator<=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return !(p2 < p1);
 	}
 
-	template<class T1, class T2> inline bool operator>(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
+	template <class T1, class T2> inline bool operator>(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return p2 < p1;
 	}
 
-	template<class T1, class T2> inline bool operator>=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
+	template <class T1, class T2> inline bool operator>=(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {
 		return !(p1 < p2);
 	}
 
-	template<class T1, class T2> inline pair<T1,T2> make_pair(T1 t, T2 u) {
+	template <class T1, class T2> inline pair<T1,T2> make_pair(T1 t, T2 u) {
 		return (pair<T1, T2>(t, u));
 	}
 	

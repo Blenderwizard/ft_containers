@@ -243,7 +243,7 @@ namespace ft {
 				}
 				else {
 					node_pointer y = this->_node->parent;
-					while (y != NULL && this->_node == y->right) {
+					while (y != 0x0 && this->_node == y->right) {
 						this->_node = y;
 						y = y->parent;
 					}
@@ -259,7 +259,7 @@ namespace ft {
 				}
 				else {
 					node_pointer y = this->_node->parent;
-					while (y != NULL && this->_node == y->right) {
+					while (y != 0x0 && this->_node == y->right) {
 						this->_node = y;
 						y = y->parent;
 					}

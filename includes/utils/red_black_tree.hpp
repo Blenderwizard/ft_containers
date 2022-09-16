@@ -62,7 +62,7 @@ namespace ft {
 					this->insert(*first);
 			}
 		
-			inline RBTree& operator=(const RBTree & src){
+			inline RBTree& operator=(const RBTree & src) {
 				if (this == &src)
 					return *this;
 				this->node_alloc = src.node_alloc;
@@ -84,7 +84,7 @@ namespace ft {
 
 			inline ~RBTree() {
 				clear_node(this->root);
-				this->val_alloc.destroy(this->header->value);
+				this->val_alloc.destroy(this->header);
 				this->val_alloc.deallocate(this->header->value, 1);
 				this->node_alloc.deallocate(this->nil, 1);
 				this->node_alloc.deallocate(this->header, 1);
@@ -379,17 +379,19 @@ namespace ft {
 			inline iterator lower_bound(const value_type & value) {
 				iterator last = this->end();
 				for (iterator first = this->begin(); first != last; ++first) {
-					if (!this->compare((*first), value))
+					if (!this->compare((*first), value)) {
 						return (first);
+					}
 				}
 				return (last);
 			}
 
 			inline const_iterator lower_bound(const value_type & value) const{
 				const_iterator last = this->end();
-				for (const_iterator first = this->begin(); first != last; ++first){
-					if (!this->compare((*first), value))
+				for (const_iterator first = this->begin(); first != last; ++first) {
+					if (!this->compare((*first), value)) {
 						return (first);
+					}
 				}
 				return (last);
 			}
@@ -397,17 +399,19 @@ namespace ft {
 			inline iterator upper_bound(const value_type & value) {
 				iterator last = this->end();
 				for (iterator first = this->begin(); first != last; ++first){
-					if(this->compare(value, (*first)))
+					if (this->compare(value, (*first))) {
 						return (first);
+					}
 				}
 				return (last);
 			}
 
 			inline const_iterator upper_bound(const value_type & value) const {
 				const_iterator last = this->end();
-				for (const_iterator first = this->begin(); first != last; ++first){
-					if (this->compare(value, (*first))
+				for (const_iterator first = this->begin(); first != last; ++first) {
+					if (this->compare(value, (*first))) {
 						return (first);
+					}
 				}
 				return (last);
 			}
@@ -604,6 +608,7 @@ namespace ft {
 			node_pointer				header;
 			node_pointer				root;
 			size_type					tree_size;
+
 	};
 
 	template<class Content, class Compare, class Alloc> inline void swap(const  RBTree<Content, Compare, Alloc> & lhs, const  RBTree<Content, Compare, Alloc> & rhs) {

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 11:18:41 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 12:49:47 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -459,7 +459,7 @@ namespace ft {
 				for (; first != last; first++) {
 					rtn++;
 				}
-			return (rtn);
+				return (rtn);
 			}
 	};
 

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 11:26:58 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 14:42:00 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define ITERATORS_HPP
 
 #include "iterator_traits.hpp"
+#include "pair.hpp"
 
 namespace ft {
 	template <typename T> class random_access_iterator {
@@ -169,9 +170,9 @@ namespace ft {
 		return (rai1.base() - rai2.base());
 	}
 
-	template <class T> struct Node {
+	template <typename T> struct Node {
 		public:
-			inline explicit Node(T *srcval = 0) :	value(srcval), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
+			inline explicit Node(T *val = 0) :	value(val), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
 	
 			inline Node(Node const & other) {
 				this->is_black = other.is_black;
@@ -193,13 +194,13 @@ namespace ft {
 			}
 
 			inline virtual ~Node(){}
-		private:
-			T *		value;
-			Node *	parent;
-			Node *	left;
-			Node *	right;	
-			bool	is_black;
-			bool	is_nil;
+			
+			T *	value;
+			Node *				parent;
+			Node *				left;
+			Node *				right;	
+			bool				is_black;
+			bool				is_nil;
 	};
 
 	template <typename T> class red_black_tree_iterator {

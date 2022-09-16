@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 10:54:53 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 11:20:15 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 12:55:36 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ namespace ft {
 			typedef const value_type &																const_reference;
 			typedef typename ft::iterator_traits<typename Container::iterator>::difference_type		difference_type; 
 			typedef typename Container::allocator_type::size_type		 							size_type;
-			
-			stack() : c(Container()) {}
+			typedef Container																		container_type;
 			
 			explicit stack(const Container & cont = Container()) : c(cont) {}
 

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 16:07:10 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 11:22:50 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/16 13:17:58 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft {
 
 			inline pair(): first(), second() { }
 
-			inline pair(const T1 & x, const T2 & y) {
+			inline pair(T1 & x, T2 & y) {
 				this->first = x;
 				this->second = y;
 			}

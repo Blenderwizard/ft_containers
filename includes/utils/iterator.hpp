@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 11:59:27 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 14:08:45 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,6 @@ namespace ft {
 		private:
 			pointer current;
 	};
-
-	// Out of class random acess iterator defs
 	
 	template <typename T> inline bool operator==(const ft::random_access_iterator<T> & rai1, const ft::random_access_iterator<T> & rai2) {
 		return (rai1.base() == rai2.base());
@@ -326,16 +324,6 @@ namespace ft {
 				return node;
 			}
 	};
-
-	// Out of class defs for red black tree iterators
-
-	// template <typename RBTI1, typename RBTI2> inline bool operator==(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
-	// 	return (lhs.node() == rhs.node());
-	// }
-
-	// template <typename RBTI1, typename RBTI2> inline bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
-	// 	return (lhs.node() != rhs.node());
-	// }
 }
 
 #endif

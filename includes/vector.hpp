@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 12:49:47 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 14:08:29 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ namespace ft {
 			}
 
 			template<class InputIt> inline vector(InputIt first, InputIt last, const Allocator & alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) : _alloc(alloc) {
-				// TODO: Need to check if the Input Iterators are correct
 				difference_type count = dist(first, last);
 				this->first = this->_alloc.allocate(count);
 				this->vector_size = this->first + count;
@@ -160,7 +159,6 @@ namespace ft {
 				return (*(front()));
 			}
 
-			// ITERATORS
 			inline iterator begin() {
 				return (this->first);
 			}
@@ -197,7 +195,6 @@ namespace ft {
 				return (reverse_iterator(this->begin()));
 			}
 
-			// CAPACITY
 			inline bool empty() const {
 				if (this->size() == 0)
 					return (true);
@@ -236,7 +233,6 @@ namespace ft {
 				return (this->vector_size - this->first);
 			}
 
-			// MODIFIERS
 			inline void clear() {
 				size_type size = this->size();
 				for (size_type i = 0; i < size; i++) {
@@ -246,8 +242,6 @@ namespace ft {
 			}
 
 			inline iterator insert(iterator pos, const T & value) {
-				// if (pos < this->begin() || pos > this->end())
-				// 	throw std::exception();
 				size_type loc = &(*pos) - this->first;
 				if (size_type(this->vector_size - this->last) >= this->size() + 1) {
 					for (size_type i = 0; i < loc; i++)
@@ -327,7 +321,6 @@ namespace ft {
 			}
 
 			template<class InputIt> inline void insert(iterator pos, InputIt first, InputIt last, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) {
-				// TODO check if valid iterators
 				size_type count = this->dist(first, last);
 				if (size_type(this->vector_size - this->last) >= count) {
 					for (size_type i = 0; i < this->size() - (&(*pos) - this->first); i++)
@@ -414,8 +407,6 @@ namespace ft {
 				this->_alloc.destroy(&this->back());
 				(this->last)--;
 			}
-
-			// void resize (size_type count);
 
 			inline void resize (size_type count, value_type val = value_type()) {
 				if (count > this->max_size())

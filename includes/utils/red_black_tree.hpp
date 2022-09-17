@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 12:32:15 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 13:56:07 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,7 +358,7 @@ namespace ft {
 			}
 
 			inline size_type max_size() const {
-				return (this->val_alloc.max_size());
+				return (this->node_alloc.max_size());
 			}
 			
 			inline bool empty() const {

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 16:07:10 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 11:35:02 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 14:09:11 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,6 @@ namespace ft {
 				this->second = p.second;
 				return (*this);
 			}
-
-			// operator pair<const T1, T2>() const {
-			// 	return(pair<const T1, T2>(first, second));
-			// }
 	};
 
 	template <class T1, class T2> inline bool operator==(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {

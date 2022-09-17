@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 16:07:10 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 13:17:58 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 11:35:02 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,26 @@ namespace ft {
 			typedef T1	first_type;
 			typedef T2	second_type;
 
-			T1	first;
-			T2	second;
+			first_type	first;
+			second_type	second;
 
 			inline pair(): first(), second() { }
 
-			inline pair(T1 & x, T2 & y) {
-				this->first = x;
-				this->second = y;
-			}
+			inline pair(const first_type & x, const second_type & y): first(x), second(y) {	}
 
-			template <class U1, class U2> inline pair(const pair<U1, U2> & p) {
+			template <class U1, class U2> inline pair(const pair<U1, U2> & p): first(p.first), second(p.second) { }
+
+			inline pair(const pair & p): first(p.first), second(p.second) { }
+
+			inline pair & operator=(const pair & p) {
 				this->first = p.first;
 				this->second = p.second;
-			}
-
-			inline pair & operator=(const pair & other) {
-				this->first = other.first;
-				this->second = other.second;
 				return (*this);
 			}
+
+			// operator pair<const T1, T2>() const {
+			// 	return(pair<const T1, T2>(first, second));
+			// }
 	};
 
 	template <class T1, class T2> inline bool operator==(const pair<T1, T2> & p1, const pair<T1, T2> & p2) {

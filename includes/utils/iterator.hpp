@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 10:36:57 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 11:59:27 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,11 +206,11 @@ namespace ft {
 	template <typename T> class red_black_tree_iterator {
 		public:
 			typedef std::bidirectional_iterator_tag						iterator_category;
-			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
-			typedef typename ft::iterator_traits<T*>::reference 		reference;
-			typedef typename ft::iterator_traits<T*>::pointer			pointer;
-			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
-			typedef Node<value_type>* 									node_pointer;
+			typedef typename ft::iterator_traits<T *>::value_type 		value_type;
+			typedef typename ft::iterator_traits<T *>::reference 		reference;
+			typedef typename ft::iterator_traits<T *>::pointer			pointer;
+			typedef typename ft::iterator_traits<T *>::difference_type	difference_type;
+			typedef Node<value_type> * 									node_pointer;
 
 			inline red_black_tree_iterator() {}
 
@@ -225,8 +225,8 @@ namespace ft {
 				return *this;
 			}
 
-			inline operator red_black_tree_iterator<const T>() {
-				return (*this);
+			inline operator red_black_tree_iterator<const T>() const {
+				return (this->_node);
 			}
 
 			inline reference operator*() const {
@@ -239,7 +239,7 @@ namespace ft {
 
 			inline red_black_tree_iterator & operator++() {
 				if (this->_node->right && !_node->right->is_nil) {
-					this->_node = tree_min(_node->right);
+					this->_node = this->tree_min(_node->right);
 				}
 				else {
 					node_pointer y = this->_node->parent;
@@ -255,7 +255,7 @@ namespace ft {
 			inline red_black_tree_iterator operator++(int) {
 				red_black_tree_iterator<value_type> temp = *this;
 				if (!this->_node->right->is_nil) {
-					this->_node = tree_min(_node->right);
+					this->_node = this->tree_min(_node->right);
 				}
 				else {
 					node_pointer y = this->_node->parent;
@@ -270,7 +270,7 @@ namespace ft {
 
 			inline red_black_tree_iterator & operator--() {
 				if (_node->left && !_node->left->is_nil) {
-					_node = tree_max(_node->left);
+					this->_node = this->tree_max(_node->left);
 				}
 				else {
 					node_pointer y = this->_node->parent;
@@ -303,6 +303,14 @@ namespace ft {
 				return this->_node;
 			}
 
+			inline bool operator==(const red_black_tree_iterator & it) {
+				return (this->_node == it._node);
+			}
+			
+			inline bool operator!=(const red_black_tree_iterator & it) {
+				return (this->_node != it._node);
+			}
+
 		private:
 			node_pointer _node;
 
@@ -321,13 +329,13 @@ namespace ft {
 
 	// Out of class defs for red black tree iterators
 
-	template <typename RBTI1, typename RBTI2> inline bool operator==(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
-		return (lhs.node() == rhs.node());
-	}
+	// template <typename RBTI1, typename RBTI2> inline bool operator==(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
+	// 	return (lhs.node() == rhs.node());
+	// }
 
-	template <typename RBTI1, typename RBTI2> inline bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
-		return (lhs.node() != rhs.node());
-	}
+	// template <typename RBTI1, typename RBTI2> inline bool operator!=(const red_black_tree_iterator<RBTI1> & lhs, const red_black_tree_iterator<RBTI2> & rhs) {
+	// 	return (lhs.node() != rhs.node());
+	// }
 }
 
 #endif

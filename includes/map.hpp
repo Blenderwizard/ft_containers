@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 12:37:51 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 12:40:15 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ namespace ft {
 			}
 
 			inline iterator erase(iterator pos) {
-				value_type t = *pos;
+				key_type t = pos->first;
 				pos++;
 				this->tree.erase(t);
 				return(pos);

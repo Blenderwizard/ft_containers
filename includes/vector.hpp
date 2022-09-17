@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 16:07:55 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 17:24:26 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include <algorithm>
 #include <functional>
 #include <stdexcept>
-
-#include <iostream>
 
 #include "./utils/enable_if.hpp"
 #include "./utils/iterator.hpp"

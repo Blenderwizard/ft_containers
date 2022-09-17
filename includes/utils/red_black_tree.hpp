@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 14:48:33 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 10:52:05 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ namespace ft {
 			typedef T															value_type;
 			typedef Compare														value_compare;
 			typedef Alloc														allocator_type;
-			typedef typename Alloc::template rebind<Node<T> >::other			node_allocator;
+			typedef ft::Node<T>													node_type;
+			typedef typename Alloc::template rebind<node_type>::other			node_allocator;
 			typedef	typename node_allocator::pointer							node_pointer;
 			typedef typename allocator_type::reference							reference;
 			typedef typename allocator_type::const_reference					const_reference;
@@ -36,8 +37,8 @@ namespace ft {
 			typedef typename allocator_type::const_pointer						const_pointer;
 			typedef std::ptrdiff_t												difference_type;
 			typedef std::size_t													size_type;
-			typedef red_black_tree_iterator<T>									iterator;
-			typedef red_black_tree_iterator<const T>							const_iterator;
+			typedef ft::red_black_tree_iterator<T>								iterator;
+			typedef ft::red_black_tree_iterator<const T>						const_iterator;
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
@@ -46,7 +47,7 @@ namespace ft {
 				this->root = this->header;
 			}
 
-			inline RBTree() : root(0x0), val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), tree_size(0) {
+			inline RBTree() : val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), root(0x0), tree_size(0) {
 				this->init_nil_head();
 				this->root = this->header;
 			}
@@ -84,7 +85,7 @@ namespace ft {
 
 			inline ~RBTree() {
 				clear_node(this->root);
-				this->val_alloc.destroy(this->header);
+				this->node_alloc.destroy(this->header);
 				this->val_alloc.deallocate(this->header->value, 1);
 				this->node_alloc.deallocate(this->nil, 1);
 				this->node_alloc.deallocate(this->header, 1);

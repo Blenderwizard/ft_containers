@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 14:42:00 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 10:36:57 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ namespace ft {
 
 			inline virtual ~Node(){}
 			
-			T *	value;
+			T *					value;
 			Node *				parent;
 			Node *				left;
 			Node *				right;	

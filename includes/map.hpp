@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 14:43:49 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 10:51:54 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,22 @@
 namespace ft {
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator< ft::pair<const Key, T> > > class map {
 		public:
-			typedef Key																		key_type;
-			typedef T																		mapped_type;
-			typedef ft::pair<const Key, T>													value_type;
-			typedef	std::size_t																size_type;
-			typedef std::ptrdiff_t															difference_type;
-			typedef Allocator																allocator_type;
-    		typedef Compare																	key_compare;
-			typedef value_type&																reference;
-			typedef const value_type &														const_reference;
-			typedef typename Allocator::pointer												pointer;
-			typedef	typename Allocator::const_pointer										const_pointer;
-			typedef ft::RBTree<ft::pair<key_type, value_type>, key_compare, allocator_type>	tree_type;
-			typedef ft::red_black_tree_iterator<value_type>									iterator;
-			typedef ft::red_black_tree_iterator<const value_type>							const_iterator;
-			typedef ft::reverse_iterator<iterator>											reverse_iterator;
-			typedef	ft::reverse_iterator<const_iterator>									const_reverse_iterator;
+			typedef Key																key_type;
+			typedef T																mapped_type;
+			typedef ft::pair<const Key, T>											value_type;
+			typedef	std::size_t														size_type;
+			typedef std::ptrdiff_t													difference_type;
+			typedef Allocator														allocator_type;
+    		typedef Compare															key_compare;
+			typedef value_type &													reference;
+			typedef const value_type &												const_reference;
+			typedef typename Allocator::pointer										pointer;
+			typedef	typename Allocator::const_pointer								const_pointer;
+			typedef ft::RBTree<value_type, key_compare, allocator_type>				tree_type;
+			typedef ft::red_black_tree_iterator<value_type>							iterator;
+			typedef ft::red_black_tree_iterator<const value_type>					const_iterator;
+			typedef ft::reverse_iterator<iterator>									reverse_iterator;
+			typedef	ft::reverse_iterator<const_iterator>							const_reverse_iterator;
 
 			class value_compare {
 				friend class map;

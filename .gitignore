@@ -5,3 +5,4 @@ main
 *.dSYM
 main.cpp
 container
+src/

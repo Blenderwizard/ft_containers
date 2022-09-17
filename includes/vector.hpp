@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 14:08:29 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/17 16:07:55 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <functional>
 #include <stdexcept>
+
+#include <iostream>
 
 #include "./utils/enable_if.hpp"
 #include "./utils/iterator.hpp"
@@ -243,81 +245,30 @@ namespace ft {
 
 			inline iterator insert(iterator pos, const T & value) {
 				size_type loc = &(*pos) - this->first;
-				if (size_type(this->vector_size - this->last) >= this->size() + 1) {
-					for (size_type i = 0; i < loc; i++)
-						this->_alloc.construct(this->last - i, *(this->last - i - 1));
-					this->last++;
-					this->_alloc.construct(&(*pos), value);
-				} else {
-					size_type new_capacity;
-					if (this->size() * 2 > 0)
-						new_capacity = this->size() * 2;
-					else
-						new_capacity = 1;
-					pointer new_first = this->_alloc.allocate(new_capacity);
-					pointer new_last = new_first + this->size() + 1;
-					pointer new_vector_size = new_first + new_capacity;
-					for (size_type i = 0; i < loc; i++)
-						this->_alloc.construct(new_first, *(this->first + i));
-					this->_alloc.construct(new_first + loc, value);
-					for (size_type i = 0; i < this->size() - loc; i++)
-						this->_alloc.construct(new_last - 1, *(this->last - i - 1));
-					for (size_type i = 0; i < this->size(); i++)
-						this->_alloc.destroy(this->first + 1);
-					if (this->first)
-						this->_alloc.deallocate(this->first, this->capacity());
-					this->first = new_first;
-					this->last = new_last;
-					this->vector_size = new_vector_size;
-				}
-				return (iterator(this->first + loc));
+				if (this->size() == this->capacity())
+					this->reserve(this->size() + 1);
+				for (pointer it = this->last; it && it != this->first + loc; it--)
+					*it = *(it - 1);
+				pointer ret = (this->first + loc);
+				*ret = value;
+				(this->last)++;
+				return (iterator(ret));
 			}
 
-			inline void insert(iterator pos, size_type count, const T & value) {
+			inline iterator insert(iterator pos, size_type count, const T & value) {
 				if (count == 0)
-					return;
+					return (pos);
 				if (count > this->max_size())
 					throw std::exception();
 				size_type loc = &(*pos) - this->first;
-				if (size_type(this->vector_size - this->last) >= count) {
-					for (size_type i = 0; i < this->size() - loc; i++)
-						this->_alloc.construct(this->last - i + (count - 1), *(this->last - i - 1));
-					this->last += count;
-					while (count) {
-						this->_alloc.construct(&(*pos) + (count - 1), value);
-						count--;
-					}
-				} else {
-					size_type new_capacity;
-					if (this->size() * 2 > 0)
-						new_capacity = this->size() * 2;
-					else
-						new_capacity = 1;
-					pointer new_first = this->_alloc.allocate(new_capacity);
-					pointer new_vector_size = new_first + new_capacity;
-					if (size_type(new_vector_size - new_first) < this->size() + count) {
-						if (new_first)
-							this->_alloc.deallocate(new_first, new_first - new_vector_size);
-						new_capacity = this->size() + count;
-						new_first = _alloc.allocate(new_capacity);
-						new_vector_size = new_first + new_capacity;
-					}
-					pointer new_last = new_first + this->size() + count;
-					for (difference_type i = 0; i < (&(*pos) - this->first); i++)
-						this->_alloc.construct(new_first + i, *(this->first + i));
-					for (size_type i = 0; i < count; i++)
-						this->_alloc.construct(new_first + loc + i, value);
-					for (size_type i = 0; i < (this->size() - loc); i++)
-						this->_alloc.construct(new_first - i - 1, *(this->last - i - 1));
-
-					for (size_type i = 0; i < this->size(); i++)
-						this->_alloc.destroy(this->first + i);
-					this->_alloc.deallocate(this->first, this->capacity());
-
-					this->first = new_first;
-					this->last = new_last;
-					this->vector_size = new_vector_size;
-				}
+				if (this->size() + count >= this->capacity())
+					this->reserve(this->size() + count);
+				for (pointer it = this->last + count - 1; it && it != this->first + loc + count - 1; it--)
+					*it = *(it - count);
+				for (size_type i = 0; i < count; i++)
+					*(this->first + loc + i) = value;
+				this->last += count;
+				return (this->first + loc - count + 1);
 			}
 
 			template<class InputIt> inline void insert(iterator pos, InputIt first, InputIt last, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) {

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/19 13:16:41 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/19 13:20:46 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ namespace ft {
 			}
 
 			inline void erase(iterator pos) {
-				
+				(void) pos;
 			}
 
 			inline size_type erase(const key_type & value) {

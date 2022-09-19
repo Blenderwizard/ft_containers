@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/19 11:13:50 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/19 12:52:18 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,47 +246,7 @@ namespace ft {
 			}
 
 			inline void erase(iterator pos) {
-				node_pointer y = pos.node();
-				node_pointer x;
-				node_pointer for_free = y;
-				bool y_original_is_black = y->is_black;
 				
-				if (this->is_nil(y->left)) {
-					x = y->right;
-					this->transplant(y, y->right);
-				} else if (this->is_nil(y->right)) {
-					x = y->left;
-					this->transplant(y, y->left);
-				} else {
-					node_pointer z = y;
-					y = this->_tree_min(z->right);
-					y_original_is_black = y->is_black;
-					x = y->right;
-					if (y->parent != z){
-						this->transplant(y, y->right);
-						y->right = z->right;
-						z->right->parent = y;
-					}
-					this->transplant(z, y);
-					y->left = z->left;
-					y->left->parent = y;
-					y->is_black = z->is_black;
-				}
-				this->free_node(for_free);
-				if (y_original_is_black)
-					this->erase_rebalance(x);
-				this->tree_size--;
-				this->nil->parent = 0x0;
-				if (this->tree_size == 0)
-					this->root = this->header;
-				else {
-					if (this->tree_size != 1)
-						x = this->_tree_max(this->root);
-					else
-						x = this->root;
-					x->right = this->header;
-					this->header->parent = x;
-				}
 			}
 
 			inline size_type erase(const key_type & value) {
@@ -300,61 +260,6 @@ namespace ft {
 				for (; first != last; first++)
 					this->erase(first);
 				return (last);
-			}
-
-			inline void erase_rebalance(node_pointer x) {
-				node_pointer brother;
-				while (x != this->root && x->is_black) {
-					if (x == x->parent->left) {
-						brother = x->parent->right;
-						if (!brother->is_black) {
-							brother->is_black = true;
-							x->parent->is_black = false;
-							this->_rotate_left(x->parent);
-							brother = x->parent->right;
-						}
-						if (brother->left->is_black && brother->right->is_black) {
-							brother->is_black = false;
-							x = x->parent;
-						} else {
-							if (brother->right->is_black){
-								brother->left->is_black = true;
-								brother->is_black = false;
-								this->_rotate_right(brother);
-								brother = x->parent->right;
-							}
-							brother->is_black = x->parent->is_black;
-							x->parent->is_black = true;
-							brother->right->is_black = true;
-							this->_rotate_left(x->parent);
-							x = this->root;
-						}
-					} else {
-						brother = x->parent->left;
-						if (!brother->is_black) {
-							brother->is_black = true;
-							x->parent->is_black = false;
-							this->_rotate_right(x->parent);
-							brother = x->parent->left;
-						}
-						if (brother->right->is_black && brother->left->is_black) {
-							brother->is_black = false;
-							x = x->parent;
-						} else {
-							if (brother->left->is_black){
-								brother->right->is_black = true;
-								brother->is_black = false;
-								this->_rotate_left(brother);
-								brother = x->parent->left;
-							}
-							brother->is_black = x->parent->is_black;
-							x->parent->is_black = true;
-							brother->left->is_black = true;
-							this->_rotate_right(x->parent);
-							x = this->root;
-						}
-					}
-				}
 			}
 
 			inline size_type size() const {
@@ -451,13 +356,13 @@ namespace ft {
 
 		protected:
 			inline node_pointer _tree_min(node_pointer node) const {
-				while (node != 0x0 && !is_nil(node->left))
+				while (node != 0x0 && !this->is_nil(node->left))
 					node = node->left;
 				return node;
 			}
 			
 			inline node_pointer _tree_max(node_pointer node) const {
-				while (node != NULL && !is_nil(node->right))
+				while (node != NULL && !this->is_nil(node->right))
 					node = node->right;
 				return node;
 			}
@@ -508,11 +413,11 @@ namespace ft {
 
 			inline node_pointer _insert_to_node(node_pointer root, node_pointer new_node) {
 				if (this->compare(new_node->value->first, root->value->first)) {
-					if (!is_nil(root->left))
+					if (!this->is_nil(root->left))
 						return (this->_insert_to_node(root->left, new_node));
 					root->left = new_node;
 				} else {
-					if (!is_nil(root->right))
+					if (!this->is_nil(root->right))
 						return (this->_insert_to_node(root->right, new_node));
 					root->right = new_node;
 				}
@@ -569,8 +474,12 @@ namespace ft {
 				this->root->is_black = true;
 			}
 
+			inline void erase_rebalance(node_pointer x) {
+				
+			}
+
 			inline bool is_nil(node_pointer node) const {
-				return node == this->nil || node == this->header;
+				return (node == this->nil || node == this->header);
 			}
 
 			inline void clear_node(node_pointer node) {

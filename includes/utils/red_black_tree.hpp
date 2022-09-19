@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/19 12:52:18 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/19 13:16:41 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ namespace ft {
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 			inline RBTree(const Compare & comp, const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) {
-				this->init_nil_head();
+				this->_init_nil_head();
 				this->root = this->header;
 			}
 
 			inline RBTree() : val_alloc(allocator_type()), node_alloc(node_allocator()), compare(value_compare()), root(0x0), tree_size(0) {
-				this->init_nil_head();
+				this->_init_nil_head();
 				this->root = this->header;
 			}
 
@@ -60,7 +60,7 @@ namespace ft {
 			}
 
 			template<class InputIt> inline RBTree(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last, const value_compare & comp, const allocator_type& alloc = allocator_type()): val_alloc(alloc), node_alloc(node_allocator()), compare(comp) {
-				this->init_nil_head();
+				this->_init_nil_head();
 				this->root = this->header;
 				for (; first != last; ++first)
 					this->insert(*first);
@@ -73,9 +73,9 @@ namespace ft {
 				this->val_alloc = src.val_alloc;
 				this->compare = src.compare;
 				if (this->root == NULL)
-					this->init_nil_head();
+					this->_init_nil_head();
 				else
-					this->clear_node(this->root);
+					this->_clear_node(this->root);
 				if (src.tree_size == 0)
 					this->root = this->header;
 				else {
@@ -87,7 +87,7 @@ namespace ft {
 			}
 
 			inline ~RBTree() {
-				clear_node(this->root);
+				_clear_node(this->root);
 				this->node_alloc.destroy(this->header);
 				this->val_alloc.deallocate(this->header->value, 1);
 				this->node_alloc.deallocate(this->nil, 1);
@@ -169,7 +169,7 @@ namespace ft {
 			}
 
 			inline node_pointer search(const key_type & value, node_pointer node) const {
-				if(!node || this->is_nil(node))
+				if(!node || this->_is_nil(node))
 					return 0x0;
 				if (this->compare(value, node->value->first))
 					return this->search(value, node->left);
@@ -202,7 +202,7 @@ namespace ft {
 				new_node->right = this->nil;
 				this->_insert_into_tree(new_node, this->root);
 				ft::pair<iterator, bool> ret = ft::make_pair(iterator(new_node), true);
-				this->insert_rebalance(new_node);
+				this->_insert_rebalance(new_node);
 				this->tree_size++;
 				new_node = this->_tree_max(this->root);
 				new_node->right = this->header;
@@ -232,7 +232,7 @@ namespace ft {
 				}
 				else
 					this->_insert_into_tree(new_node, this->root);
-				this->insert_rebalance(new_node);
+				this->_insert_rebalance(new_node);
 				this->tree_size++;
 				node_pointer max_of_tree = this->_tree_max(this->root);
 				max_of_tree->right = this->header;
@@ -250,8 +250,8 @@ namespace ft {
 			}
 
 			inline size_type erase(const key_type & value) {
-				node_pointer ret = search(value, this->root);
-				if (ret)
+				node_pointer ret = this->search(value, this->root);
+				if (ret == 0x0)
 					this->erase(iterator(ret));
 				return (ret != 0x0);
 			}
@@ -282,7 +282,7 @@ namespace ft {
 			}
 			
 			inline void clear() {
-				this->clear_node(this->root);
+				this->_clear_node(this->root);
 				this->root = this->header;
 				this->header->parent = 0x0;
 				this->tree_size = 0;
@@ -356,13 +356,13 @@ namespace ft {
 
 		protected:
 			inline node_pointer _tree_min(node_pointer node) const {
-				while (node != 0x0 && !this->is_nil(node->left))
+				while (node != 0x0 && !this->_is_nil(node->left))
 					node = node->left;
 				return node;
 			}
 			
 			inline node_pointer _tree_max(node_pointer node) const {
-				while (node != NULL && !this->is_nil(node->right))
+				while (node != NULL && !this->_is_nil(node->right))
 					node = node->right;
 				return node;
 			}
@@ -372,7 +372,7 @@ namespace ft {
 
 				y = node->left;
 				node->left = y->right;
-				if (!this->is_nil(y->right))
+				if (!this->_is_nil(y->right))
 					y->right->parent = node;
 				y->parent = node->parent;
 				if (node->parent == 0x0)
@@ -390,7 +390,7 @@ namespace ft {
 
 				y = node->right;
 				node->right = y->left;
-				if (!this->is_nil(y->left))
+				if (!this->_is_nil(y->left))
 					y->left->parent = node;
 				y->parent = node->parent;
 				if (node->parent == 0x0)
@@ -413,11 +413,11 @@ namespace ft {
 
 			inline node_pointer _insert_to_node(node_pointer root, node_pointer new_node) {
 				if (this->compare(new_node->value->first, root->value->first)) {
-					if (!this->is_nil(root->left))
+					if (!this->_is_nil(root->left))
 						return (this->_insert_to_node(root->left, new_node));
 					root->left = new_node;
 				} else {
-					if (!this->is_nil(root->right))
+					if (!this->_is_nil(root->right))
 						return (this->_insert_to_node(root->right, new_node));
 					root->right = new_node;
 				}
@@ -433,7 +433,7 @@ namespace ft {
 				return (new_node);
 			}
 
-			inline void insert_rebalance(node_pointer node) {
+			inline void _insert_rebalance(node_pointer node) {
 				if (node != this->root && node->parent != this->root) {
 					while (node != this->root && !node->parent->is_black) {
 						if (node->parent == node->parent->parent->left) {
@@ -474,25 +474,21 @@ namespace ft {
 				this->root->is_black = true;
 			}
 
-			inline void erase_rebalance(node_pointer x) {
-				
-			}
-
-			inline bool is_nil(node_pointer node) const {
+			inline bool _is_nil(node_pointer node) const {
 				return (node == this->nil || node == this->header);
 			}
 
-			inline void clear_node(node_pointer node) {
-				if (node && !this->is_nil(node)) {
-					this->clear_node(node->right);
-					this->clear_node(node->left);
+			inline void _clear_node(node_pointer node) {
+				if (node && !this->_is_nil(node)) {
+					this->_clear_node(node->right);
+					this->_clear_node(node->left);
 					this->val_alloc.destroy(node->value);
 					this->val_alloc.deallocate(node->value, 1);
 					this->node_alloc.deallocate(node, 1);
 				}
 			}
 		
-			inline void init_nil_head() {
+			inline void _init_nil_head() {
 				this->nil = this->node_alloc.allocate(1);
 				this->node_alloc.construct(this->nil, Node<T>());
 				this->nil->is_black = true;
@@ -502,22 +498,6 @@ namespace ft {
 				this->header->value = this->val_alloc.allocate(1);
 				this->val_alloc.construct(this->header->value, T());
 				this->header->is_black = true;
-			}
-
-			inline void transplant(node_pointer where, node_pointer what) {
-				if (where == this->root)
-					this->root = what;
-				else if (where == where->parent->left)
-					where->parent->left = what;
-				else
-					where->parent->right = what;
-				what->parent = where->parent;
-			}
-			
-			inline void free_node(node_pointer node) {
-				this->val_alloc.destroy(node->value);
-				this->val_alloc.deallocate(node->value, 1);
-				this->node_alloc.deallocate(node, 1);
 			}
 			
 		private:

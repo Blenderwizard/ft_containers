@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 14:45:56 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/19 10:30:38 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ namespace ft {
 				new_node->right = this->nil;
 				this->_insert_into_tree(new_node, this->root);
 				ft::pair<iterator, bool> ret = ft::make_pair(iterator(new_node), true);
-				this->_insert_fixup(new_node);
+				this->insert_rebalance(new_node);
 				this->tree_size++;
 				new_node = this->_tree_max(this->root);
 				new_node->right = this->header;
@@ -231,7 +231,7 @@ namespace ft {
 				}
 				else
 					this->_insert_into_tree(new_node, this->root);
-				this->_insert_fixup(new_node);
+				this->insert_rebalance(new_node);
 				this->tree_size++;
 				node_pointer max_of_tree = this->_tree_max(this->root);
 				max_of_tree->right = this->header;
@@ -245,8 +245,11 @@ namespace ft {
 			}
 
 			inline void erase(iterator pos) {
-				node_pointer y = pos.node(), x, for_free = y;
+				node_pointer y = pos.node();
+				node_pointer x;
+				node_pointer for_free = y;
 				bool y_original_is_black = y->is_black;
+				
 				if (this->is_nil(y->left)) {
 					x = y->right;
 					this->transplant(y, y->right);
@@ -270,7 +273,7 @@ namespace ft {
 				}
 				this->free_node(for_free);
 				if (y_original_is_black)
-					this->erase_fixup(x);
+					this->erase_rebalance(x);
 				this->tree_size--;
 				this->nil->parent = 0x0;
 				if (this->tree_size == 0)
@@ -298,7 +301,7 @@ namespace ft {
 				return (last);
 			}
 
-			inline void erase_fixup(node_pointer x) {
+			inline void erase_rebalance(node_pointer x) {
 				node_pointer brother;
 				while (x != this->root && x->is_black) {
 					if (x == x->parent->left) {
@@ -521,7 +524,7 @@ namespace ft {
 				return (new_node);
 			}
 
-			inline void _insert_fixup(node_pointer node) {
+			inline void insert_rebalance(node_pointer node) {
 				if (node != this->root && node->parent != this->root) {
 					while (node != this->root && !node->parent->is_black) {
 						if (node->parent == node->parent->parent->left) {

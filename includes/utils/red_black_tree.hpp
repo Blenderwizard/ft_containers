@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/19 10:30:38 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/19 11:13:50 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <memory>
 #include <algorithm>
+#include <limits>
 
 #include "pair.hpp"
 #include "iterator.hpp"
@@ -360,8 +361,11 @@ namespace ft {
 				return (this->tree_size);
 			}
 
+			// Thanks sspina for the help
 			inline size_type max_size() const {
-				return (this->node_alloc.max_size());
+				size_type div = sizeof(node_pointer) * 4 + sizeof(value_type);
+				div = (div / 8) * 8;
+				return (std::numeric_limits<size_type>::max() / div);
 			}
 			
 			inline bool empty() const {

@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 12:28:45 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 13:49:55 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ namespace ft {
 		public:
 			typedef const Key													key_type;
 			typedef Key															value_type;
-			typedef ft::pair<const Key, Key>									mapped_type;
+			typedef ft::pair<key_type, value_type>								mapped_type;
 			typedef	std::size_t													size_type;
 			typedef std::ptrdiff_t												difference_type;
 			typedef Allocator													allocator_type;

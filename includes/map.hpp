@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 13:08:49 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 13:50:39 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ namespace ft {
 		public:
 			typedef const Key													key_type;
 			typedef T															mapped_type;
-			typedef ft::pair<const Key, T>										value_type;
+			typedef ft::pair<key_type, mapped_type>								value_type;
 			typedef	std::size_t													size_type;
 			typedef std::ptrdiff_t												difference_type;
 			typedef Allocator													allocator_type;
@@ -44,7 +44,6 @@ namespace ft {
 			typedef	typename tree_type::const_reverse_iterator					const_reverse_iterator;
 
 			class value_compare {
-				friend class map;
 				protected:
 					Compare c;
 				public:

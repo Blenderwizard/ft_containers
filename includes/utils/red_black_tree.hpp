@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 10:29:21 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 10:35:53 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -547,7 +547,7 @@ namespace ft {
 			
 			inline void _erase_rebalance(node_pointer node) {
 				node_pointer sibling;
-				while (node != root && node->is_black) {
+				while (node != this->root && node->is_black) {
 					if (node == node->parent->left) {
 						sibling = node->parent->right;
 						if (!sibling->is_black) {

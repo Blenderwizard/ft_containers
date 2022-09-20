@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/19 14:29:50 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 10:29:21 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,42 @@ namespace ft {
 			}
 
 			inline void erase(iterator pos) {
-				(void) pos;
+				if (pos == this->end())
+					return;
+				node_pointer z = pos.node();
+				node_pointer y = z;
+				node_pointer x;
+				bool y_original_was_black = y->is_black;
+				if (this->_is_nil(z->left)) {
+					x = z->right;
+					this->_transplant(z, z->right);
+				} else if (this->_is_nil(z->right)) {
+					x = z->left;
+					this->_transplant(z, z->left);
+				} else {
+					y = this->_tree_min(z->right);
+					y_original_was_black = y->is_black;
+					x = y->right;
+					if (y->parent == z) {
+						x->parent = y;
+					} else {
+						this->_transplant(y, y->right);
+						y->right = z->right;
+						y->right->parent = y;
+					}
+					this->_transplant(z, y);
+					y->left = z->left;
+					y->left->parent = y;
+					y->is_black = z->is_black;
+				}
+				this->val_alloc.destroy(z->value);
+				this->val_alloc.deallocate(z->value, 1);
+				this->node_alloc.destroy(z);
+				this->node_alloc.deallocate(z, 1);
+				this->tree_size--;
+				if (y_original_was_black) {
+					this->_erase_rebalance(x);
+				}
 			}
 
 			inline size_type erase(const key_type & value) {
@@ -498,6 +533,72 @@ namespace ft {
 				this->header->value = this->val_alloc.allocate(1);
 				this->val_alloc.construct(this->header->value, T());
 				this->header->is_black = true;
+			}
+
+			inline void _transplant(node_pointer where, node_pointer what) {
+				if (where == this->root)
+					this->root = what;
+				else if (where == where->parent->left)
+					where->parent->left = what;
+				else
+					where->parent->right = what;
+				what->parent = where->parent;
+			}
+			
+			inline void _erase_rebalance(node_pointer node) {
+				node_pointer sibling;
+				while (node != root && node->is_black) {
+					if (node == node->parent->left) {
+						sibling = node->parent->right;
+						if (!sibling->is_black) {
+							sibling->is_black = true;
+							node->parent->is_black = false;
+							this->_rotate_left(node->parent);
+							sibling = node->parent->right;
+						}
+						if (sibling->left->is_black && sibling->right->is_black) {
+							sibling->is_black = false;
+							node = node->parent;
+						} else {
+							if (sibling->right->is_black) {
+								sibling->left->is_black = true;
+								sibling->is_black = false;
+								this->_rotate_right(sibling);
+								sibling = node->parent->right;
+							}
+							sibling->is_black = node->parent->is_black;
+							node->parent->is_black = true;
+							sibling->right->is_black = true;
+							this->_rotate_left(node->parent);
+							node = this->root;
+						}
+					} else {
+						sibling = node->parent->left;
+						if (!sibling->is_black) {
+							sibling->is_black = true;
+							node->parent->is_black = false;
+							this->_rotate_right(node->parent);
+							sibling = node->parent->right;
+						}
+						if (sibling->left->is_black && sibling->right->is_black) {
+							sibling->is_black = false;
+							node = node->parent;
+						} else {
+							if (sibling->left->is_black) {
+								sibling->right->is_black = true;
+								sibling->is_black = false;
+								this->_rotate_left(sibling);
+								sibling = node->parent->left;
+							}
+							sibling->is_black = node->parent->is_black;
+							node->parent->is_black = true;
+							sibling->left->is_black = true;
+							this->_rotate_right(node->parent);
+							node = this->root;
+						}
+					}
+				}
+				node->is_black = true;
 			}
 			
 		private:

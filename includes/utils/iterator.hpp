@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 14:08:45 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 10:26:02 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ namespace ft {
 				}
 				else {
 					node_pointer y = this->_node->parent;
-					while (y != 0x0 && this->_node == y->right) {
+					while (!y->is_nil && this->_node == y->right) {
 						this->_node = y;
 						y = y->parent;
 					}
@@ -257,7 +257,7 @@ namespace ft {
 				}
 				else {
 					node_pointer y = this->_node->parent;
-					while (y != 0x0 && this->_node == y->right) {
+					while (!y->is_nil && this->_node == y->right) {
 						this->_node = y;
 						y = y->parent;
 					}
@@ -272,7 +272,7 @@ namespace ft {
 				}
 				else {
 					node_pointer y = this->_node->parent;
-					while (y != 0x0 && this->_node == y->left) {
+					while (!y->is_nil && this->_node == y->left) {
 						this->_node = y;
 						y = y->parent;
 					}
@@ -288,7 +288,7 @@ namespace ft {
 				}
 				else {
 					node_pointer y = _node->parent;
-					while (y != 0x0 && this->_node == y->left) {
+					while (!y->is_nil && this->_node == y->left) {
 						this->_node = y;
 						y = y->parent;
 					}

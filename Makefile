@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/09/16 11:50:50 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/09/20 10:10:57 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ OUT = $(subst $(SRC_DIR)/, $(OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
 NAME = container
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g -O3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-O3 -fsanitize=address
 
 all : $(NAME)
 

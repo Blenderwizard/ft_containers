@@ -170,13 +170,12 @@ namespace ft {
 
 	template <typename T> struct Node {
 		public:
-			inline explicit Node(T *val = 0) :	value(val), parent(0), left(0), right(0), is_black(false), is_nil(0) {}
+			inline explicit Node(T *val = 0) :	value(val), parent(0), left(0), right(0), is_black(false) {}
 	
 			inline Node(Node const & other) {
 				this->is_black = other.is_black;
 				this->value = other.value;
 				this->parent = other.parent;
-				this->is_nil = other.is_nil;
 				this->right = other.right;
 				this->left = other.left;
 			};
@@ -184,11 +183,50 @@ namespace ft {
 			inline Node & operator=(const Node & other) {
 				this->is_black = other.is_black;
 				this->value = other.value;
-				this->is_nil = other.is_nil;
 				this->parent = other.parent;
 				this->right = other.right;
 				this->left = other.left;
 				return *this;
+			}
+
+			inline Node * min() {
+				if (!this->left)
+					return this;
+				return this->left->min();
+			}
+
+			inline Node * max() {
+				while (!this->right)
+					return this;
+				return this->right->max();
+			}
+
+			inline Node* next() {
+				if (this->right)
+					return (this->right->min());
+				if (this->parent && this == this->parent->left)
+					return (this->parent);
+				Node* next = this;
+				while (next && next->parent && next == next->parent->right)
+					next = next->parent;
+				if (next) {
+					return (next->parent);
+				}
+				return 0x0;
+			}
+
+			inline Node* prev() {
+				if (this->left)
+					return (this->left->max());
+				if(this->parent && this == this->parent->right)
+					return (this->parent);
+				Node* prev= this;
+				while (prev && prev->parent && prev == prev->parent->left)
+					prev = prev->parent;
+				if (prev) {
+					return (prev->parent);
+				}
+				return 0x0;
 			}
 
 			inline virtual ~Node(){}
@@ -198,7 +236,6 @@ namespace ft {
 			Node *				left;
 			Node *				right;	
 			bool				is_black;
-			bool				is_nil;
 	};
 
 	template <typename T> class red_black_tree_iterator {
@@ -208,11 +245,13 @@ namespace ft {
 			typedef typename ft::iterator_traits<T *>::reference 		reference;
 			typedef typename ft::iterator_traits<T *>::pointer			pointer;
 			typedef typename ft::iterator_traits<T *>::difference_type	difference_type;
-			typedef Node<value_type> * 									node_pointer;
+			typedef ft::Node<value_type> * 								node_pointer;
+			typedef ft::Node<const value_type> * 						const_node_pointer;
 
-			inline red_black_tree_iterator() {}
 
-			inline red_black_tree_iterator(void *node): _node(static_cast<node_pointer>(node)) {}
+			inline red_black_tree_iterator() : _node(0x0), _tree_min(0x0), _tree_max(0x0) {}
+
+			inline explicit red_black_tree_iterator(node_pointer node, node_pointer min, node_pointer max) : _node(node), _tree_min(min), _tree_max(max) {}
 
 			inline red_black_tree_iterator(const red_black_tree_iterator & other) {
 				*this = other;
@@ -224,7 +263,7 @@ namespace ft {
 			}
 
 			inline operator red_black_tree_iterator<const T>() const {
-				return (this->_node);
+				return red_black_tree_iterator<const T>((const_node_pointer) this->_node, (const_node_pointer) this->_tree_min, (const_node_pointer) this->_tree_max);
 			}
 
 			inline reference operator*() const {
@@ -236,69 +275,41 @@ namespace ft {
 			}
 
 			inline red_black_tree_iterator & operator++() {
-				if (this->_node->right && !_node->right->is_nil) {
-					this->_node = this->tree_min(_node->right);
-				}
-				else {
-					node_pointer y = this->_node->parent;
-					while (y != 0x0 && this->_node == y->right) {
-						this->_node = y;
-						y = y->parent;
-					}
-					this->_node = y;
-				}
+				if (!this->_node)
+					this->_node = this->_tree_min;
+				else
+					this->_node = this->_node->next();
 				return *this;
 			}
 
 			inline red_black_tree_iterator operator++(int) {
 				red_black_tree_iterator<value_type> temp = *this;
-				if (!this->_node->right->is_nil) {
-					this->_node = this->tree_min(_node->right);
-				}
-				else {
-					node_pointer y = this->_node->parent;
-					while (y != 0x0 && this->_node == y->right) {
-						this->_node = y;
-						y = y->parent;
-					}
-					this->_node = y;
-				}
+				if (!this->_node)
+					this->_node = this->_tree_min;
+				else
+					this->_node = this->_node->next();
 				return temp;
 			}
 
 			inline red_black_tree_iterator & operator--() {
-				if (_node->left && !_node->left->is_nil) {
-					this->_node = this->tree_max(_node->left);
-				}
-				else {
-					node_pointer y = this->_node->parent;
-					while (y != 0x0 && this->_node == y->left) {
-						this->_node = y;
-						y = y->parent;
-					}
-					this->_node = y;
-				}
+				if (!this->_node)
+					this->_node = this->_tree_max;
+				else
+					this->_node = this->_node->prev();
 				return *this;
 			}
 
 			inline red_black_tree_iterator operator--(int) {
 				red_black_tree_iterator<value_type> temp = *this;
-				if (this->_node->left && !this->_node->left->is_nil) {
-					this->_node = this->tree_max(this->_node->left);
-				}
-				else {
-					node_pointer y = _node->parent;
-					while (y != 0x0 && this->_node == y->left) {
-						this->_node = y;
-						y = y->parent;
-					}
-					this->_node = y;
-				}
+				if (!this->_node)
+					this->_node = this->_tree_max;
+				else
+					this->_node = this->_node->prev();
 				return temp;
 			}
 
 			inline node_pointer node() const {
-				return this->_node;
+				return (this->_node);
 			}
 
 			inline bool operator==(const red_black_tree_iterator & it) {
@@ -311,18 +322,8 @@ namespace ft {
 
 		private:
 			node_pointer _node;
-
-			inline node_pointer tree_min(node_pointer node) const {
-				while (node->left != NULL && !node->left->is_nil)
-					node = node->left;
-				return node;
-			}
-
-			inline node_pointer tree_max(node_pointer node) const {
-				while (!node->right->is_nil)
-					node = node->right;
-				return node;
-			}
+			node_pointer _tree_min;
+			node_pointer _tree_max;
 	};
 }
 

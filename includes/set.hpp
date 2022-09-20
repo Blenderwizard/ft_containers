@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map.hpp                                            :+:      :+:    :+:   */
+/*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 13:08:49 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 12:28:45 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef set_HPP
+#define set_HPP
 
 #include <memory>
 #include <utility>
@@ -24,11 +24,11 @@
 #include "./utils/equal.hpp"
 
 namespace ft {
-	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator< ft::pair<const Key, T> > > class map {
+	template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, Key> > > class set {
 		public:
 			typedef const Key													key_type;
-			typedef T															mapped_type;
-			typedef ft::pair<const Key, T>										value_type;
+			typedef Key															value_type;
+			typedef ft::pair<const Key, Key>									mapped_type;
 			typedef	std::size_t													size_type;
 			typedef std::ptrdiff_t												difference_type;
 			typedef Allocator													allocator_type;
@@ -37,14 +37,14 @@ namespace ft {
 			typedef const value_type &											const_reference;
 			typedef typename Allocator::pointer									pointer;
 			typedef	typename Allocator::const_pointer							const_pointer;
-			typedef ft::RBTree<value_type, key_compare, allocator_type>			tree_type;
+			typedef ft::RBTree<mapped_type, key_compare, allocator_type>		tree_type;
 			typedef typename tree_type::iterator								iterator;
 			typedef typename tree_type::const_iterator							const_iterator;
 			typedef typename tree_type::reverse_iterator						reverse_iterator;
 			typedef	typename tree_type::const_reverse_iterator					const_reverse_iterator;
 
 			class value_compare {
-				friend class map;
+				friend class set;
 				protected:
 					Compare c;
 				public:
@@ -66,14 +66,14 @@ namespace ft {
 			value_compare		vcompare;
 
 		public:
-			inline explicit map(const Compare & comp = Compare(), const Allocator & alloc = Allocator()) :
+			inline explicit set(const Compare & comp = Compare(), const Allocator & alloc = Allocator()) :
 				_alloc(alloc),
 				tree(tree_type()),
 				compare(comp),
 				vcompare(value_compare(comp))
 			{}
 			
-			template <class InputIt> map(InputIt first, InputIt last, const Compare & comp = Compare(), const Allocator & alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) :
+			template <class InputIt> set(InputIt first, InputIt last, const Compare & comp = Compare(), const Allocator & alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) :
 				_alloc(alloc),
 				tree(tree_type()),
 				compare(comp),
@@ -81,13 +81,13 @@ namespace ft {
 				this->tree.insert(first, last);
 			}
 
-			inline map(const map & other): _alloc(other._alloc), tree(other.tree), compare(other.compare), vcompare(other.vcompare) {	}
+			inline set(const set & other): _alloc(other._alloc), tree(other.tree), compare(other.compare), vcompare(other.vcompare) {	}
 
-			inline ~map() {
+			inline ~set() {
 				this->clear();
 			}
 
-			inline map & operator=(const map & other) {
+			inline set & operator=(const set & other) {
 				this->tree = other.tree;
 				this->compare = other.compare;
 				this->vcompare = other.vcompare;
@@ -101,18 +101,18 @@ namespace ft {
 			inline mapped_type & at(key_type & key) {
 				iterator res = this->tree.find(key);
 				if (res == this->tree.end())
-					throw std::out_of_range("map:: key not found");
+					throw std::out_of_range("set:: key not found");
 				return (res->second);
 			}
 
 			inline const mapped_type & at(key_type & key) const {
 				iterator res = this->tree.find(key);
 				if (res == this->tree.end())
-					throw std::out_of_range("map:: key not found");
+					throw std::out_of_range("set:: key not found");
 				return (res->second);
 			}
 			
-			mapped_type & operator[](key_type & key) {
+			value_type & operator[](const value_type & key) {
 				iterator res = this->tree.find(key);
 				if (res == this->tree.end())
 					res = this->tree.insert(ft::make_pair(key, mapped_type())).first;
@@ -175,26 +175,27 @@ namespace ft {
 				return (this->tree.insert(hint, value));
 			}
 
-			template <class InputIt> inline void insert(InputIt & first, InputIt & last) {
+			template <class InputIt> inline void insert(InputIt first, InputIt last) {
 				this->tree.insert(first, last);
 			}
 
-			inline iterator erase(iterator & pos) {
+			inline iterator erase(iterator pos) {
 				key_type t = pos->first;
 				pos++;
 				this->tree.erase(t);
 				return(pos);
 			}
 
-			inline iterator erase(iterator & first, iterator & last) {
-				return (this->tree.erase(first, last));
+			inline iterator erase(iterator first, iterator last) {
+				this->tree.erase(first, last);
+				return (first);
 			}
 
 			inline size_type erase(const Key & key) {
 				return (this->tree.erase(key));
 			}
 
-			inline void swap(map & other) {
+			inline void swap(set & other) {
 				std::swap(this->compare, other.compare);
 				this->tree.swap(other.tree);
 			}
@@ -247,21 +248,21 @@ namespace ft {
 			}
 	};
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator==(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class Compare, class Alloc> inline bool operator==(const ft::set<Key, Compare, Alloc> & vec1, const ft::set<Key,  Compare, Alloc> & vec2) {
 		if (vec1.size() != vec2.size())
 			return (false);
 		return (ft::equal(vec1.begin(), vec1.end(), vec2.begin()));
 	}
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator!=(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class Compare, class Alloc> inline bool operator!=(const ft::set<Key, Compare, Alloc> & vec1, const ft::set<Key, Compare, Alloc> & vec2) {
 		return (!(vec1 == vec2));
 	}
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator<(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator first1 = vec1.begin();
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator last1 = vec1.end();
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator first2 = vec2.begin();
-		typename ft::map<Key, T, Compare, Alloc>::const_iterator last2 = vec2.end();
+	template <class Key, class Compare, class Alloc> inline bool operator<(const ft::set<Key, Compare, Alloc> & vec1, const ft::set<Key, Compare, Alloc> & vec2) {
+		typename ft::set<Key, Compare, Alloc>::const_iterator first1 = vec1.begin();
+		typename ft::set<Key, Compare, Alloc>::const_iterator last1 = vec1.end();
+		typename ft::set<Key, Compare, Alloc>::const_iterator first2 = vec2.begin();
+		typename ft::set<Key, Compare, Alloc>::const_iterator last2 = vec2.end();
 		while (first1 != last1) {
 			if (first2 == last2 || *first2 < *first1)
 				return false;
@@ -273,19 +274,19 @@ namespace ft {
 		return (first2 != last2);
 	}
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator<=(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class Compare, class Alloc> inline bool operator<=(const ft::set<Key, Compare, Alloc> & vec1, const ft::set<Key, Compare, Alloc> & vec2) {
 		return (!(vec2 < vec1));
 	}
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator>(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class Compare, class Alloc> inline bool operator>(const ft::set<Key, Compare, Alloc> & vec1, const ft::set<Key, Compare, Alloc> & vec2) {
 		return (vec2 < vec1);
 	}
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator>= (const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class Compare, class Alloc> inline bool operator>= (const ft::set<Key, Compare, Alloc> & vec1, const ft::set<Key, Compare, Alloc> & vec2) {
 		return (!(vec1 < vec2));
 	}
 	
-	template <class Key, class T, class Compare, class Alloc> inline void swap (ft::map<Key, T, Compare, Alloc> & vec1, ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class Compare, class Alloc> inline void swap (ft::set<Key, Compare, Alloc> & vec1, ft::set<Key, Compare, Alloc> & vec2) {
 		vec1.swap(vec2);
 	}
 }

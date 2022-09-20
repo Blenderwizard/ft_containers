@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 10:54:53 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/16 12:55:36 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 13:04:58 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <algorithm>
 
-#include "./vector.hpp"
+#include "vector.hpp"
 #include "./utils/iterator.hpp"
 #include "./utils/reverse_iterator.hpp"
 

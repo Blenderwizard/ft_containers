@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 10:35:53 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 13:11:54 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "enable_if.hpp"
 #include "is_integral.hpp"
 #include "reverse_iterator.hpp"
+#include "../stack.hpp"
 
 namespace ft {
 	template <class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree {
@@ -241,14 +242,15 @@ namespace ft {
 			}
 			
 			template <class InputIt> inline void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
+				ft::vector<key_type> todel;
 				for (; first != last; first++)
 					this->insert(*first);
 			}
 
-			inline void erase(iterator pos) {
-				if (pos == this->end())
+			inline void erase_node(node_pointer & pos) {
+				if (const_iterator(pos) == this->end())
 					return;
-				node_pointer z = pos.node();
+				node_pointer z = pos;
 				node_pointer y = z;
 				node_pointer x;
 				bool y_original_was_black = y->is_black;
@@ -286,14 +288,19 @@ namespace ft {
 
 			inline size_type erase(const key_type & value) {
 				node_pointer ret = this->search(value, this->root);
-				if (ret == 0x0)
-					this->erase(iterator(ret));
+				if (ret != 0x0)
+					this->erase_node(ret);
 				return (ret != 0x0);
 			}
 
-			inline iterator erase(iterator first, iterator last) {
-				for (; first != last; first++)
-					this->erase(first);
+			inline iterator erase(iterator & first, iterator & last) {
+				ft::stack<key_type> todel;
+				for (; first != last && first != this->end(); first++)
+					todel.push(first->first);
+				while (todel.size() != 0) {
+					this->erase(todel.top());
+					todel.pop();
+				}
 				return (last);
 			}
 

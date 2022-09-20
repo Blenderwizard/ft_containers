@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 12:40:15 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/20 13:08:49 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 namespace ft {
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator< ft::pair<const Key, T> > > class map {
 		public:
-			typedef Key															key_type;
+			typedef const Key													key_type;
 			typedef T															mapped_type;
 			typedef ft::pair<const Key, T>										value_type;
 			typedef	std::size_t													size_type;
@@ -98,21 +98,21 @@ namespace ft {
 				return (this->tree.get_allocator());
 			}
 
-			inline mapped_type & at(const key_type & key) {
+			inline mapped_type & at(key_type & key) {
 				iterator res = this->tree.find(key);
 				if (res == this->tree.end())
 					throw std::out_of_range("map:: key not found");
 				return (res->second);
 			}
 
-			inline const mapped_type & at(const key_type & key) const {
+			inline const mapped_type & at(key_type & key) const {
 				iterator res = this->tree.find(key);
 				if (res == this->tree.end())
 					throw std::out_of_range("map:: key not found");
 				return (res->second);
 			}
 			
-			T & operator[](const key_type & key) {
+			mapped_type & operator[](key_type & key) {
 				iterator res = this->tree.find(key);
 				if (res == this->tree.end())
 					res = this->tree.insert(ft::make_pair(key, mapped_type())).first;
@@ -175,20 +175,19 @@ namespace ft {
 				return (this->tree.insert(hint, value));
 			}
 
-			template <class InputIt> inline void insert(InputIt first, InputIt last) {
+			template <class InputIt> inline void insert(InputIt & first, InputIt & last) {
 				this->tree.insert(first, last);
 			}
 
-			inline iterator erase(iterator pos) {
+			inline iterator erase(iterator & pos) {
 				key_type t = pos->first;
 				pos++;
 				this->tree.erase(t);
 				return(pos);
 			}
 
-			inline iterator erase(iterator first, iterator last) {
-				this->tree.erase(first, last);
-				return (first);
+			inline iterator erase(iterator & first, iterator & last) {
+				return (this->tree.erase(first, last));
 			}
 
 			inline size_type erase(const Key & key) {

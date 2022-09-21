@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 10:11:16 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 12:10:00 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,42 +195,42 @@ namespace ft {
 				this->tree.swap(other.tree);
 			}
 
-			inline size_type count(const Key & key) const {
+			inline size_type count(const key_type & key) const {
 				const_iterator res = this->tree.find(key);
 				if (res == this->tree.end())
 					return (0);
 				return (1);
 			}
 
-			inline iterator find(const Key & key) {
+			inline iterator find(const key_type & key) {
 				return (this->tree.find(key));
 			}
 
-			inline const_iterator find(const Key & key) const {
+			inline const_iterator find(const key_type & key) const {
 				return (this->tree.find(key));
 			}
 
-			inline ft::pair<iterator, iterator> equal_range(const Key & key) {
+			inline ft::pair<iterator, iterator> equal_range(const key_type & key) {
 				return (this->tree.equal_range(key));
 			}
 
-			inline ft::pair<const_iterator, const_iterator> equal_range(const Key & key) const {
+			inline ft::pair<const_iterator, const_iterator> equal_range(const key_type & key) const {
 				return (this->tree.equal_range(key));
 			}
 
-			inline iterator lower_bound(const Key & key) {
+			inline iterator lower_bound(const key_type & key) {
 				return (this->tree.lower_bound(key));
 			}
 
-			inline const_iterator lower_bound(const Key & key) const {
+			inline const_iterator lower_bound(const key_type & key) const {
 				return (this->tree.lower_bound(key));
 			}
 
-			inline iterator upper_bound(const Key & key) {
+			inline iterator upper_bound(const key_type & key) {
 				return (this->tree.upper_bound(key));
 			}
 
-			inline const_iterator upper_bound(const Key & key) const {
+			inline const_iterator upper_bound(const key_type & key) const {
 				return (this->tree.upper_bound(key));
 			}
 

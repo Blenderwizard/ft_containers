@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 11:08:42 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 12:54:03 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ namespace ft {
 	template <class T, class Compare = std::less<T>, class Alloc = std::allocator<T> > class RBTree {
 		public:
 			typedef T															value_type;
-			typedef typename value_type::first_type								key_type;
-			typedef typename value_type::second_type							mapped_type;
 			typedef Compare														value_compare;
 			typedef Alloc														allocator_type;
 			typedef ft::Node<T>													node_type;
@@ -126,24 +124,24 @@ namespace ft {
 				return (const_reverse_iterator(this->begin()));
 			}
 
-			inline node_pointer search(const key_type & value, node_pointer node) const {
+			inline node_pointer search(const value_type & value, node_pointer node) const {
 				if(!node)
 					return 0x0;
-				if (this->compare(value, node->value->first))
+				if (this->compare(value, *(node->value)))
 					return this->search(value, node->left);
-				if (this->compare(node->value->first, value))
+				if (this->compare(*(node->value), value))
 					return this->search(value, node->right);
 				return node;
 			}
 
-			inline iterator find(const key_type & value) {
+			inline iterator find(const value_type & value) {
 				node_pointer ret = this->search(value, this->root);
 				if (ret == 0x0)
 					return this->end();
 				return iterator(ret, this->_tree_min(), this->_tree_max());
 			}
 
-			inline const_iterator find(const key_type & value) const {
+			inline const_iterator find(const value_type & value) const {
 				node_pointer ret = this->search(value, this->root);
 				if (ret == 0x0)
 					return this->end();
@@ -153,7 +151,7 @@ namespace ft {
 			inline ft::pair<iterator, bool> insert(const value_type & value) {
 				node_pointer new_node = this->_insert_into_tree(value);
 				if (!new_node) {
-					return ft::make_pair(this->find(value.first), false);
+					return ft::make_pair(this->find(value), false);
 				}
 				return ft::make_pair(iterator(new_node, this->_tree_min(), this->_tree_max()), true);
 			}
@@ -161,9 +159,9 @@ namespace ft {
 			inline iterator insert(iterator hint, const value_type & value) {
 				node_pointer pos = hint.node();
 				while (1) {
-					if (!pos || pos->value->first == value.first)
+					if (!pos || *(pos->value) == value)
 						break;
-					if (!this->compare(pos->value->first, value.first))
+					if (!this->compare(*(pos->value), value))
 						pos = pos->left;
 					else
 						pos = pos->right;
@@ -180,10 +178,10 @@ namespace ft {
 			}
 
 			inline void erase(iterator & it) {
-				this->erase(it->first);
+				this->erase(*it);
 			}
 
-			inline size_type erase(const key_type & value) {
+			inline size_type erase(const value_type & value) {
 				node_pointer ret = this->search(value, this->root);
 				if (ret != 0x0)
 					this->_erase_node(ret);
@@ -191,9 +189,9 @@ namespace ft {
 			}
 
 			inline iterator erase(iterator & first, iterator & last) {
-				ft::stack<const key_type> todel;
+				ft::stack<const value_type> todel;
 				for (; first != last && first != this->end(); first++)
-					todel.push(first->first);
+					todel.push(*first);
 				while (todel.size() != 0) {
 					this->erase(todel.top());
 					todel.pop();
@@ -224,60 +222,60 @@ namespace ft {
 				this->_clear_tree();
 			}
 
-			inline iterator lower_bound(const key_type & value) {
+			inline iterator lower_bound(const value_type & value) {
 				iterator last = this->end();
 				for (iterator first = this->begin(); first != last; ++first) {
-					if (!this->compare(first->first, value)) {
+					if (!this->compare(*(first), value)) {
 						return (first);
 					}
 				}
 				return (last);
 			}
 
-			inline const_iterator lower_bound(const key_type & value) const{
+			inline const_iterator lower_bound(const value_type & value) const{
 				const_iterator last = this->cend();
 				for (const_iterator first = this->cbegin(); first != last; ++first) {
-					if (!this->compare(first->first, value)) {
+					if (!this->compare(*(first), value)) {
 						return (first);
 					}
 				}
 				return (last);
 			}
 
-			inline const_iterator clower_bound(const key_type & value) const{
+			inline const_iterator clower_bound(const value_type & value) const{
 				const_iterator last = this->cend();
 				for (const_iterator first = this->cbegin(); first != last; ++first) {
-					if (!this->compare(first->first, value)) {
+					if (!this->compare(*(first), value)) {
 						return (first);
 					}
 				}
 				return (last);
 			}
 
-			inline iterator upper_bound(const key_type & value) {
+			inline iterator upper_bound(const value_type & value) {
 				iterator last = this->end();
 				for (iterator first = this->begin(); first != last; ++first){
-					if (this->compare(value, first->first)) {
+					if (this->compare(value, *(first))) {
 						return (first);
 					}
 				}
 				return (last);
 			}
 
-			inline const_iterator upper_bound(const key_type & value) const {
+			inline const_iterator upper_bound(const value_type & value) const {
 				const_iterator last = this->cend();
 				for (const_iterator first = this->cbegin(); first != last; ++first) {
-					if (this->compare(value, first->first)) {
+					if (this->compare(value, *(first))) {
 						return (first);
 					}
 				}
 				return (last);
 			}
 
-			inline const_iterator cupper_bound(const key_type & value) const {
+			inline const_iterator cupper_bound(const value_type & value) const {
 				const_iterator last = this->cend();
 				for (const_iterator first = this->cbegin(); first != last; ++first) {
-					if (this->compare(value, first->first)) {
+					if (this->compare(value, *(first))) {
 						return (first);
 					}
 				}
@@ -292,11 +290,15 @@ namespace ft {
 				std::swap(this->compare, other.compare);
 			}
 
-			inline ft::pair<iterator, iterator> equal_range(const key_type & value) {
+			inline ft::pair<iterator, iterator> equal_range(const value_type & value) {
 				return (ft::make_pair(this->lower_bound(value), this->upper_bound(value)));
 			}
 
-			inline ft::pair<const_iterator, const_iterator> equal_range(const key_type & value) const {
+			inline ft::pair<const_iterator, const_iterator> equal_range(const value_type & value) const {
+				return (ft::make_pair(this->clower_bound(value), this->cupper_bound(value)));
+			}
+
+			inline ft::pair<const_iterator, const_iterator> cequal_range(const value_type & value) const {
 				return (ft::make_pair(this->clower_bound(value), this->cupper_bound(value)));
 			}
 			
@@ -354,7 +356,7 @@ namespace ft {
 			}
 
 			inline node_pointer _insert_into_tree(const value_type & value) {
-				if (this->search(value.first, this->root))
+				if (this->search(value, this->root))
 					return (0x0);
 				node_pointer new_node = this->_create_node(value);
 				if (!this->root) {
@@ -362,7 +364,7 @@ namespace ft {
 				} else {
 					node_pointer current = this->root;
 					while (1) {
-						if (this->compare(current->value->first, new_node->value->first)) {
+						if (this->compare(*(current->value), *(new_node->value))) {
 							if (!current->right) {
 								new_node->parent = current;
 								current->right = new_node;

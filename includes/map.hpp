@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 12:10:00 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 12:53:20 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,6 @@ namespace ft {
 			typedef const value_type &											const_reference;
 			typedef typename Allocator::pointer									pointer;
 			typedef	typename Allocator::const_pointer							const_pointer;
-			typedef ft::RBTree<value_type, key_compare, allocator_type>			tree_type;
-			typedef typename tree_type::iterator								iterator;
-			typedef typename tree_type::const_iterator							const_iterator;
-			typedef typename tree_type::reverse_iterator						reverse_iterator;
-			typedef	typename tree_type::const_reverse_iterator					const_reverse_iterator;
 
 			class value_compare {
 				protected:
@@ -55,32 +50,40 @@ namespace ft {
 						return (c(lhs.first, rhs.first));
 					}
 
+					inline value_compare() {};
+
 					inline explicit value_compare(Compare c): c(c) { };
 			};
 
+			typedef ft::RBTree<value_type, value_compare, allocator_type>		tree_type;
+			typedef typename tree_type::iterator								iterator;
+			typedef typename tree_type::const_iterator							const_iterator;
+			typedef typename tree_type::reverse_iterator						reverse_iterator;
+			typedef	typename tree_type::const_reverse_iterator					const_reverse_iterator;
+
 		private:
 			allocator_type		_alloc;
-			tree_type			tree;
 			key_compare			compare;
 			value_compare		vcompare;
+			tree_type			tree;
 
 		public:
 			inline explicit map(const Compare & comp = Compare(), const Allocator & alloc = Allocator()) :
 				_alloc(alloc),
-				tree(tree_type()),
 				compare(comp),
-				vcompare(value_compare(comp))
+				vcompare(value_compare(comp)),
+				tree(tree_type())
 			{}
 			
 			template <class InputIt> map(InputIt first, InputIt last, const Compare & comp = Compare(), const Allocator & alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type* = 0x0) :
 				_alloc(alloc),
-				tree(tree_type()),
 				compare(comp),
-				vcompare(value_compare(comp)) {
+				vcompare(value_compare(comp)),
+				tree(tree_type(value_compare(comp), alloc)) {
 				this->tree.insert(first, last);
 			}
 
-			inline map(const map & other): _alloc(other._alloc), tree(other.tree), compare(other.compare), vcompare(other.vcompare) {	}
+			inline map(const map & other): _alloc(other._alloc), compare(other.compare), vcompare(other.vcompare), tree(other.tree) { }
 
 			inline ~map() {
 				this->clear();
@@ -98,21 +101,21 @@ namespace ft {
 			}
 
 			inline mapped_type & at(key_type & key) {
-				iterator res = this->tree.find(key);
+				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
 					throw std::out_of_range("map:: key not found");
 				return (res->second);
 			}
 
 			inline const mapped_type & at(key_type & key) const {
-				iterator res = this->tree.find(key);
+				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
 					throw std::out_of_range("map:: key not found");
 				return (res->second);
 			}
 			
 			mapped_type & operator[](key_type & key) {
-				iterator res = this->tree.find(key);
+				iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
 					res = this->tree.insert(ft::make_pair(key, mapped_type())).first;
 				return (res->second);
@@ -187,7 +190,7 @@ namespace ft {
 			}
 
 			inline size_type erase(const key_type & key) {
-				return (this->tree.erase(key));
+				return (this->tree.erase(ft::make_pair(key, mapped_type())));
 			}
 
 			inline void swap(map & other) {
@@ -196,42 +199,42 @@ namespace ft {
 			}
 
 			inline size_type count(const key_type & key) const {
-				const_iterator res = this->tree.find(key);
+				const_iterator res = this->tree.find(ft::make_pair(key, mapped_type()));
 				if (res == this->tree.end())
 					return (0);
 				return (1);
 			}
 
 			inline iterator find(const key_type & key) {
-				return (this->tree.find(key));
+				return (this->tree.find(ft::make_pair(key, mapped_type())));
 			}
 
 			inline const_iterator find(const key_type & key) const {
-				return (this->tree.find(key));
+				return (this->tree.find(ft::make_pair(key, mapped_type())));
 			}
 
 			inline ft::pair<iterator, iterator> equal_range(const key_type & key) {
-				return (this->tree.equal_range(key));
+				return (this->tree.equal_range(ft::make_pair(key, mapped_type())));
 			}
 
 			inline ft::pair<const_iterator, const_iterator> equal_range(const key_type & key) const {
-				return (this->tree.equal_range(key));
+				return (this->tree.cequal_range(ft::make_pair(key, mapped_type())));
 			}
 
 			inline iterator lower_bound(const key_type & key) {
-				return (this->tree.lower_bound(key));
+				return (this->tree.lower_bound(ft::make_pair(key, mapped_type())));
 			}
 
 			inline const_iterator lower_bound(const key_type & key) const {
-				return (this->tree.lower_bound(key));
+				return (this->tree.clower_bound(ft::make_pair(key, mapped_type())));
 			}
 
 			inline iterator upper_bound(const key_type & key) {
-				return (this->tree.upper_bound(key));
+				return (this->tree.upper_bound(ft::make_pair(key, mapped_type())));
 			}
 
 			inline const_iterator upper_bound(const key_type & key) const {
-				return (this->tree.upper_bound(key));
+				return (this->tree.cupper_bound(ft::make_pair(key, mapped_type())));
 			}
 
 			inline key_compare key_comp() const {

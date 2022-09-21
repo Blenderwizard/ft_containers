@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/09/20 10:10:57 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/09/21 17:54:34 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,32 +45,44 @@ _COLOR_RESET	= \033[0m
 # Folders
 INCLUDES = -I./includes
 SRC_DIR = src
-OUTS = objs
+MY_OUTS = objs/ft
+STL_OUTS = objs/stl
 
 # Source Files
 SRC = main.cpp
 SRC_PLUS_PATH = $(addprefix $(SRC_DIR)/, $(SRC))
 
 # Output Files
-OUT = $(subst $(SRC_DIR)/, $(OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
+MY_OUT = $(subst $(SRC_DIR)/, $(MY_OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
+STL_OUT = $(subst $(SRC_DIR)/, $(STL_OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
 
-NAME = container
+MY_NAME = my_container
+STL_NAME = stl_container
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-O3 -fsanitize=address
 
-all : $(NAME)
+all : $(MY_NAME) $(STL_NAME)
 
-$(NAME):  $(OUT)
-	@echo "$(_PURPLE)Linking $(NAME)$(_COLOR_RESET)"
-	@$(CC) $(CFLAGS) $(OUT) -o $(NAME) $(INCLUDES)
+$(MY_NAME): $(MY_OUT)
+	@echo "$(_PURPLE)Linking $(MY_NAME)$(_COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(MY_OUT) -o $(MY_NAME) $(INCLUDES)
 	@echo "$(_GREEN)DONE$(_COLOR_RESET)"
 
+$(STL_NAME): $(STL_OUT)
+	@echo "$(_PURPLE)Linking $(STL_NAME)$(_COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(STL_OUT) -o $(STL_NAME) $(INCLUDES)
+	@echo "$(_GREEN)DONE$(_COLOR_RESET)"
 
-$(OUT): $(OUTS)/%.opp : $(SRC_DIR)/%.cpp
+$(MY_OUT): $(MY_OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@echo "$(_CYAN)Compiling $(basename $(notdir $*.opp)) $(_COLOR_RESET)"
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
+
+$(STL_OUT): $(STL_OUTS)/%.opp : $(SRC_DIR)/%.cpp
+	@echo "$(_CYAN)Compiling $(basename $(notdir $*.opp)) $(_COLOR_RESET)"
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) -D STD -c $< -o $@ $(INCLUDES)
 
 re: fclean
 	@make $(NAME)

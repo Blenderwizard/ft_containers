@@ -3,6 +3,7 @@ main
 *test*
 .vscode
 *.dSYM
-main.cpp
 container
-src/
+a.out
+my_container
+stl_container

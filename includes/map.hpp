@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 13:01:06 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:11:45 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,15 +177,15 @@ namespace ft {
 				return (this->tree.insert(hint, value));
 			}
 
-			template <class InputIt> inline void insert(InputIt & first, InputIt & last) {
+			template <class InputIt> inline void insert(InputIt first, InputIt last) {
 				this->tree.insert(first, last);
 			}
 
-			inline void erase(iterator & pos) {
+			inline void erase(iterator pos) {
 				this->tree.erase(pos);
 			}
 
-			inline iterator erase(iterator & first, iterator & last) {
+			inline iterator erase(iterator first, iterator last) {
 				return (this->tree.erase(first, last));
 			}
 

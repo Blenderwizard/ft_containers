@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 12:12:52 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:14:16 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ namespace ft {
 
 			inline void reserve(size_type new_cap) {
 				if (new_cap > this->max_size())
-					std::exception();
+					throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
 				else if (new_cap > this->capacity()) {
 					pointer prev_start = this->first;
 					pointer prev_end = this->last;

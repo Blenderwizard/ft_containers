@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 13:14:08 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:11:06 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ namespace ft {
 					this->_insert_into_tree(*first);
 			}
 
-			inline void erase(iterator & it) {
+			inline void erase(iterator it) {
 				this->erase(*it);
 			}
 
@@ -188,7 +188,7 @@ namespace ft {
 				return (ret != 0x0);
 			}
 
-			inline iterator erase(iterator & first, iterator & last) {
+			inline iterator erase(iterator first, iterator last) {
 				ft::stack<const value_type> todel;
 				for (; first != last && first != this->end(); first++)
 					todel.push(*first);

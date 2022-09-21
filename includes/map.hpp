@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 13:50:39 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 10:11:16 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,18 +178,15 @@ namespace ft {
 				this->tree.insert(first, last);
 			}
 
-			inline iterator erase(iterator & pos) {
-				key_type t = pos->first;
-				pos++;
-				this->tree.erase(t);
-				return(pos);
+			inline void erase(iterator & pos) {
+				this->tree.erase(pos);
 			}
 
 			inline iterator erase(iterator & first, iterator & last) {
 				return (this->tree.erase(first, last));
 			}
 
-			inline size_type erase(const Key & key) {
+			inline size_type erase(const key_type & key) {
 				return (this->tree.erase(key));
 			}
 

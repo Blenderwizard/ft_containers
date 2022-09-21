@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 13:46:17 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 10:12:04 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ namespace ft {
 				this->root = 0x0;
 				if (!src.root)
 					return(*this);
-				for (const_iterator it = src.cbegin(); it != src.cend(); it++)
+				for (const_iterator it = iterator(this->_tree_min(), this->_tree_min(), this->_tree_max()); it != iterator(0x0, this->_tree_min(), this->_tree_max()); it++)
 					this->insert(*it);
 				return *this;
 			}
@@ -147,33 +147,8 @@ namespace ft {
 			}
 			
 			inline ft::pair<iterator, bool> insert(value_type const & value) {
-				node_pointer new_node = this->_create_node(value);
-				if (!this->root) {
-					this->root = new_node;
-				} else {
-					node_pointer current = this->root;
-					while (1) {
-						if (this->compare(current->value->first, new_node->value->first)) {
-							if (!current->right) {
-								new_node->parent= current;
-								current->right= new_node;
-								break;
-							} else
-								current = current->right;
-						} else {
-							if (!current->left) {
-								new_node->parent = current;
-								current->left= new_node;
-								break;
-							} else {
-								current = current->left;
-							}
-						}
-					}
-				}
-				this->_insert_rebalance(new_node);
+				node_pointer new_node = this->_insert_into_tree(value);
 				ft::pair<iterator, bool> ret = ft::make_pair(iterator(new_node, this->_tree_min(), this->_tree_max()), true);
-				this->tree_size++;
 				return ret;
 			}
 
@@ -189,95 +164,28 @@ namespace ft {
 				}
 				if (pos)
 					return (iterator(pos, this->_tree_min(), this->_tree_max()));
-				node_pointer new_node = this->_create_node(value);
-				if (!this->root) {
-					this->root = new_node;
-				} else {
-					node_pointer current = this->root;
-					while (1) {
-						if (this->compare(current->value->first, new_node->value->first)) {
-							if (!current->right) {
-								new_node->parent= current;
-								current->right= new_node;
-								break;
-							} else
-								current = current->right;
-						} else {
-							if (!current->left) {
-								new_node->parent = current;
-								current->left= new_node;
-								break;
-							} else {
-								current = current->left;
-							}
-						}
-					}
-				}
-				this->_insert_rebalance(new_node);
-				this->tree_size++;
+				node_pointer new_node = this->_insert_into_tree(value);
 				return (iterator(new_node, this->_tree_min(), this->_tree_max()));
 			}
 			
 			template <class InputIt> inline void insert(typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type first, InputIt last) {
 				for (; first != last; first++)
-					this->insert(*first);
+					this->_insert_into_tree(*first);
 			}
 
-			inline void erase_node(node_pointer & node) {
-				node_pointer x = 0x0, y = node, tmp = 0x0;
-				bool y_last_color_black = y->is_black;
-				if (!node->left && !node->right) {
-					tmp = this->_create_node(*(node->value));
-					tmp->is_black = true;
-					this->_transplant(node, tmp);
-					x = tmp;
-				} else if (!node->left) {
-					x = node->right;
-					this->_transplant(node, node->right);
-				} else if (!node->right){
-					x = node->left;
-					this->_transplant(node, node->left);
-				} else {
-					y = node->prev();
-					x = y->left;
-					if (!x) {
-						tmp = this->_create_node(*(node->value));
-						tmp->is_black = true;
-						tmp->parent = y;
-						y->left = tmp;
-						x = tmp;
-					}
-					y_last_color_black = y->is_black;
-					if (y->parent != node) {
-						this->_transplant(y, x);
-						y->left = node->left;
-						if (y->left)
-							y->left->parent = y;
-					}
-					this->_transplant(node, y);
-					y->is_black = node->is_black;
-					y->right = node->right;
-					if (y->right)
-						y->right->parent = y;
-				}
-				this->_delete_node(node);
-				if (y_last_color_black)
-					this->_erase_rebalance(x);
-				if (tmp) {
-					this->_transplant(tmp, NULL);
-					this->_delete_node(tmp);
-				}
+			inline void erase(iterator & it) {
+				this->erase(it->first);
 			}
 
 			inline size_type erase(const key_type & value) {
 				node_pointer ret = this->search(value, this->root);
 				if (ret != 0x0)
-					this->erase_node(ret);
+					this->_erase_node(ret);
 				return (ret != 0x0);
 			}
 
 			inline iterator erase(iterator & first, iterator & last) {
-				ft::stack<key_type> todel;
+				ft::stack<const key_type> todel;
 				for (; first != last && first != this->end(); first++)
 					todel.push(first->first);
 				while (todel.size() != 0) {
@@ -438,6 +346,38 @@ namespace ft {
 				node->parent = y;
 				y->left = node;
 			}
+
+			inline node_pointer _insert_into_tree(const value_type & value) {
+				if (this->search(value.first, this->root))
+					return (0x0);
+				node_pointer new_node = this->_create_node(value);
+				if (!this->root) {
+					this->root = new_node;
+				} else {
+					node_pointer current = this->root;
+					while (1) {
+						if (this->compare(current->value->first, new_node->value->first)) {
+							if (!current->right) {
+								new_node->parent = current;
+								current->right = new_node;
+								break;
+							} else
+								current = current->right;
+						} else {
+							if (!current->left) {
+								new_node->parent = current;
+								current->left = new_node;
+								break;
+							} else {
+								current = current->left;
+							}
+						}
+					}
+				}
+				this->_insert_rebalance(new_node);
+				this->tree_size++;
+				return (new_node);
+			}
 			
 			inline void _insert_rebalance(node_pointer node) {
 				node_pointer parent = node->parent;
@@ -494,6 +434,53 @@ namespace ft {
 					where->parent->right = what;
 				if (what)
 					what->parent = where->parent;
+			}
+
+			inline void _erase_node(node_pointer & node) {
+				node_pointer x = 0x0, y = node, tmp = 0x0;
+				bool y_last_color_black = y->is_black;
+				if (!node->left && !node->right) {
+					tmp = this->_create_node(*(node->value));
+					tmp->is_black = true;
+					this->_transplant(node, tmp);
+					x = tmp;
+				} else if (!node->left) {
+					x = node->right;
+					this->_transplant(node, node->right);
+				} else if (!node->right){
+					x = node->left;
+					this->_transplant(node, node->left);
+				} else {
+					y = node->prev();
+					x = y->left;
+					if (!x) {
+						tmp = this->_create_node(*(node->value));
+						tmp->is_black = true;
+						tmp->parent = y;
+						y->left = tmp;
+						x = tmp;
+					}
+					y_last_color_black = y->is_black;
+					if (y->parent != node) {
+						this->_transplant(y, x);
+						y->left = node->left;
+						if (y->left)
+							y->left->parent = y;
+					}
+					this->_transplant(node, y);
+					y->is_black = node->is_black;
+					y->right = node->right;
+					if (y->right)
+						y->right->parent = y;
+				}
+				this->_delete_node(node);
+				this->tree_size--;
+				if (y_last_color_black)
+					this->_erase_rebalance(x);
+				if (tmp) {
+					this->_transplant(tmp, NULL);
+					this->_delete_node(tmp);
+				}
 			}
 			
 			inline void _erase_rebalance(node_pointer node) {
@@ -575,22 +562,12 @@ namespace ft {
 			}
 
 			inline void _delete_node(node_pointer node) {
+				if (!node)
+					return;
 				this->val_alloc.destroy(node->value);
 				this->val_alloc.deallocate(node->value, 1);
 				this->node_alloc.destroy(node);
 				this->node_alloc.deallocate(node, 1);
-			}
-			
-			inline node_pointer _copy_node(node_pointer other) {
-				node_pointer new_node = this->node_alloc.allocate(1);
-				this->node_alloc.construct(new_node, Node<T>());
-				new_node->is_black = other->is_black;
-				new_node->is_nil = other->is_nil;
-				if (other->value) {
-					new_node->value = this->val_alloc.allocate(1);
-					this->val_alloc.construct(new_node->value, *other->value);
-				}
-				return (new_node);
 			}
 
 		private:

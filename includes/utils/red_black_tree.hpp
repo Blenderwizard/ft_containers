@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 10:12:04 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 11:08:42 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,27 +46,31 @@ namespace ft {
 			typedef	ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef	ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			inline RBTree(const Compare & comp = value_compare(), const allocator_type& a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) { }
+			inline RBTree(const Compare & comp = value_compare(), const allocator_type & a = allocator_type()) : val_alloc(a), node_alloc(node_allocator()), compare(comp), root(0x0), tree_size(0) { }
 
 			inline RBTree(const RBTree & src) {
-				this->root = src.root;
-				this->val_alloc = src.val_alloc;
-				this->node_alloc = src.node_alloc;
-				this->compare = src.compare;
-				this->tree_size = src.tree_size;
-			}
-		
-			inline RBTree& operator=(const RBTree & src) {
-				if (this->root)
-					this->clear();
+				if (this->empty())
+					this->_clear_tree();
 				this->node_alloc = src.node_alloc;
 				this->val_alloc = src.val_alloc;
 				this->compare = src.compare;
 				this->root = 0x0;
-				if (!src.root)
+				this->tree_size = 0;
+				if (!src.empty())
+					this->insert(src.cbegin(), src.cend());
+			}
+		
+			inline RBTree& operator=(const RBTree & src) {
+				if (this->empty())
+					this->_clear_tree();
+				this->node_alloc = src.node_alloc;
+				this->val_alloc = src.val_alloc;
+				this->compare = src.compare;
+				this->root = 0x0;
+				this->tree_size = 0;
+				if (src.empty())
 					return(*this);
-				for (const_iterator it = iterator(this->_tree_min(), this->_tree_min(), this->_tree_max()); it != iterator(0x0, this->_tree_min(), this->_tree_max()); it++)
-					this->insert(*it);
+				this->insert(src.cbegin(), src.cend());
 				return *this;
 			}
 
@@ -146,10 +150,12 @@ namespace ft {
 				return iterator(ret, this->_tree_min(), this->_tree_max());
 			}
 			
-			inline ft::pair<iterator, bool> insert(value_type const & value) {
+			inline ft::pair<iterator, bool> insert(const value_type & value) {
 				node_pointer new_node = this->_insert_into_tree(value);
-				ft::pair<iterator, bool> ret = ft::make_pair(iterator(new_node, this->_tree_min(), this->_tree_max()), true);
-				return ret;
+				if (!new_node) {
+					return ft::make_pair(this->find(value.first), false);
+				}
+				return ft::make_pair(iterator(new_node, this->_tree_min(), this->_tree_max()), true);
 			}
 
 			inline iterator insert(iterator hint, const value_type & value) {

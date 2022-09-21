@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 09:58:33 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 10:49:06 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,9 @@ namespace ft {
 			}
 
 			inline red_black_tree_iterator & operator=(const red_black_tree_iterator & other) {
-				this->_node = other.node();
+				this->_node = other._node;
+				this->_tree_min = other._tree_min;
+				this->_tree_max = other._tree_max;
 				return *this;
 			}
 

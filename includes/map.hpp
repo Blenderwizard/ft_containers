@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/06 14:13:30 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 12:53:20 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 13:01:06 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,11 +280,11 @@ namespace ft {
 		return (vec2 < vec1);
 	}
 
-	template <class Key, class T, class Compare, class Alloc> inline bool operator>= (const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class T, class Compare, class Alloc> inline bool operator>=(const ft::map<Key, T, Compare, Alloc> & vec1, const ft::map<Key, T, Compare, Alloc> & vec2) {
 		return (!(vec1 < vec2));
 	}
 	
-	template <class Key, class T, class Compare, class Alloc> inline void swap (ft::map<Key, T, Compare, Alloc> & vec1, ft::map<Key, T, Compare, Alloc> & vec2) {
+	template <class Key, class T, class Compare, class Alloc> inline void swap(ft::map<Key, T, Compare, Alloc> & vec1, ft::map<Key, T, Compare, Alloc> & vec2) {
 		vec1.swap(vec2);
 	}
 }

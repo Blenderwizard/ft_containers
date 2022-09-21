@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:21:49 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 12:54:03 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 13:14:08 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,10 +307,22 @@ namespace ft {
 			}
 
 		protected:
+			inline node_pointer _tree_min() {
+				if (!this->root)
+					return (0x0);
+				return this->root->min();
+			}
+
 			inline node_pointer _tree_min() const {
 				if (!this->root)
 					return (0x0);
 				return this->root->min();
+			}
+			
+			inline node_pointer _tree_max() {
+				if (!this->root)
+					return (0x0);
+				return this->root->max();
 			}
 			
 			inline node_pointer _tree_max() const {

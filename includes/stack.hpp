@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 10:54:53 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/20 13:04:58 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 12:10:19 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ namespace ft {
 			typedef typename Container::allocator_type::size_type		 							size_type;
 			typedef Container																		container_type;
 			
-			explicit stack(const Container & cont = Container()) : c(cont) {}
+			explicit stack(const Container & cont = Container()) : c(cont) { }
 
 			stack(const stack & other) : c(Container()) {
 				this->c.insert(this->c.begin(), other.c.begin(), other.c.end());
@@ -37,7 +37,7 @@ namespace ft {
 			
 			~stack() {}
 
-			stack & operator=(const stack& other) {
+			stack & operator=(const stack & other) {
 				if (other != *this) {
 					this->c.clear();
 					this->c.insert(this->c.end(), other.c.begin(), other.c.end());

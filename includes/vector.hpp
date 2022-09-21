@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/17 17:24:26 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/21 12:12:52 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ namespace ft {
 		public:
 			typedef T															value_type;
 			typedef Allocator													allocator_type;
-			typedef value_type&													reference;
-			typedef const value_type&											const_reference;
+			typedef value_type &												reference;
+			typedef const value_type &											const_reference;
 			typedef ft::random_access_iterator<value_type>						iterator;
 			typedef ft::random_access_iterator<const value_type>				const_iterator;
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
@@ -41,7 +41,7 @@ namespace ft {
 
 			inline explicit vector(const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
 			
-			inline explicit vector(size_type count, const T & value = T(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
+			inline explicit vector(size_type count, const value_type & value = value_type(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
 				this->first = this->_alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;
@@ -71,7 +71,7 @@ namespace ft {
 				this->_alloc.deallocate(this->first, this->capacity());
 			}
 
-			inline vector& operator=(const vector& other) {
+			inline vector& operator=(const vector & other) {
 				if (other == *this)
 					return (*this);
 				this->clear();
@@ -79,7 +79,7 @@ namespace ft {
 				return (*this);
 			}
 
-			inline void assign(size_type count, const T& value) {
+			inline void assign(size_type count, const value_type & value) {
 				this->clear();
 				if (count == 0)
 					return ;
@@ -147,13 +147,13 @@ namespace ft {
 				return (*(this->last - 1));
 			}
 
-			inline T* data() {
+			inline value_type * data() {
 				if (this->size() == 0)
 					return (0x0);
 				return (*(front()));
 			}
 
-			inline const T* data() const {
+			inline const value_type * data() const {
 				if (this->size() == 0)
 					return (0x0);
 				return (*(front()));
@@ -241,7 +241,7 @@ namespace ft {
 				}
 			}
 
-			inline iterator insert(iterator pos, const T & value) {
+			inline iterator insert(iterator pos, const value_type & value) {
 				size_type loc = &(*pos) - this->first;
 				if (this->size() == this->capacity())
 					this->reserve(this->size() + 1);
@@ -253,7 +253,7 @@ namespace ft {
 				return (iterator(ret));
 			}
 
-			inline iterator insert(iterator pos, size_type count, const T & value) {
+			inline iterator insert(iterator pos, size_type count, const value_type & value) {
 				if (count == 0)
 					return (pos);
 				if (count > this->max_size())
@@ -340,7 +340,7 @@ namespace ft {
 				return (iterator(loc));
 			}
 
-			inline void push_back(const T & value) {
+			inline void push_back(const value_type & value) {
 				if (this->last == vector_size) {
 					if (this->size() > 0) {
 						this->reserve((int) this->size() * 2);
@@ -394,7 +394,7 @@ namespace ft {
 			pointer			last;
 			pointer			vector_size;
 
-			template<class InputIt> inline typename ft::iterator_traits<InputIt>::difference_type dist (InputIt first, InputIt last) {
+			template<class InputIt> inline typename ft::iterator_traits<InputIt>::difference_type dist(InputIt first, InputIt last) {
 				typename ft::iterator_traits<InputIt>::difference_type rtn = 0;
 				for (; first != last; first++) {
 					rtn++;
@@ -437,11 +437,11 @@ namespace ft {
 		return (vec2 < vec1);
 	}
 
-	template <class T, class Alloc> inline bool operator>= (const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
+	template <class T, class Alloc> inline bool operator>=(const ft::vector<T, Alloc> & vec1, const ft::vector<T, Alloc> & vec2) {
 		return (!(vec1 < vec2));
 	}
 	
-	template <class T, class Alloc> inline void swap (ft::vector<T,Alloc> & vec1, ft::vector<T,Alloc> & vec2) {
+	template <class T, class Alloc> inline void swap(ft::vector<T,Alloc> & vec1, ft::vector<T,Alloc> & vec2) {
 		vec1.swap(vec2);
 	}
 }

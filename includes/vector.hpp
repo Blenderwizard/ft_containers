@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 17:14:16 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/22 10:13:46 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ namespace ft {
 
 			inline explicit vector(const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {}
 			
-			inline explicit vector(size_type count, const value_type & value = value_type(), const Allocator& alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
+			inline explicit vector(size_type count, const value_type & value = value_type(), const Allocator & alloc = Allocator()): _alloc(alloc), first(0x0), last(0x0), vector_size(0x0) {
 				this->first = this->_alloc.allocate(count);
 				this->vector_size = this->first + count;
 				this->last = this->first;

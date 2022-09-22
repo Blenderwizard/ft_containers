@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/21 13:06:08 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/22 10:47:13 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ namespace ft {
 			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
 			typedef pointer												iterator_type;
             
-			inline random_access_iterator() : current(0x0) {}
+			inline random_access_iterator() : current(0x0) { }
 
-			inline random_access_iterator(pointer x): current(x) {}
+			inline random_access_iterator(pointer x): current(x) { }
 
-			inline random_access_iterator(const random_access_iterator & rai): current(rai.current) {}
+			inline random_access_iterator(const random_access_iterator & rai): current(rai.current) { }
 		
 			inline random_access_iterator<value_type> & operator=(const random_access_iterator & rai) {
 				if (this != &rai)
@@ -245,10 +245,12 @@ namespace ft {
 			typedef typename ft::iterator_traits<T *>::reference 		reference;
 			typedef typename ft::iterator_traits<T *>::pointer			pointer;
 			typedef typename ft::iterator_traits<T *>::difference_type	difference_type;
+
+		private:
 			typedef ft::Node<value_type> * 								node_pointer;
 			typedef ft::Node<const value_type> * 						const_node_pointer;
-
-
+		
+		public:
 			inline red_black_tree_iterator() : _node(0x0), _tree_min(0x0), _tree_max(0x0) {}
 
 			inline explicit red_black_tree_iterator(node_pointer node, node_pointer min, node_pointer max) : _node(node), _tree_min(min), _tree_max(max) {}

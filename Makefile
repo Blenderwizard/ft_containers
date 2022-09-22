@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/09/21 17:54:34 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/09/22 11:10:19 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,14 +85,17 @@ $(STL_OUT): $(STL_OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@$(CC) $(CFLAGS) -D STD -c $< -o $@ $(INCLUDES)
 
 re: fclean
-	@make $(NAME)
+	@make $(MY_NAME)
+	@make $(STL_NAME)
 
 fclean: clean
 	@echo "$(_RED)Cleaning output files$(_COLOR_RESET)"
-	@rm -rf $(NAME)
+	@rm -rf $(MY_NAME)
+	@rm -rf $(STL_NAME)
 
 clean:
 	@echo "$(_RED)Cleaning object files$(_COLOR_RESET)"
-	@rm -rf $(OUTS)
+	@rm -rf $(MY_OUTS)
+	@rm -rf $(STL_OUTS)
 	
 .PHONY: clean fclean re all

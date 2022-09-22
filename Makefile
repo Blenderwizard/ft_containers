@@ -6,7 +6,7 @@
 #    By: jrathelo <student.42nice.fr>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/25 15:25:19 by jrathelo          #+#    #+#              #
-#    Updated: 2022/09/22 11:10:19 by jrathelo         ###   ########.fr        #
+#    Updated: 2022/09/22 17:04:21 by jrathelo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,57 +45,57 @@ _COLOR_RESET	= \033[0m
 # Folders
 INCLUDES = -I./includes
 SRC_DIR = src
-MY_OUTS = objs/ft
-STL_OUTS = objs/stl
+FT_OUTS = objs/ft
+STD_OUTS = objs/std
 
 # Source Files
 SRC = main.cpp
 SRC_PLUS_PATH = $(addprefix $(SRC_DIR)/, $(SRC))
 
 # Output Files
-MY_OUT = $(subst $(SRC_DIR)/, $(MY_OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
-STL_OUT = $(subst $(SRC_DIR)/, $(STL_OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
+FT_OUT = $(subst $(SRC_DIR)/, $(FT_OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
+STD_OUT = $(subst $(SRC_DIR)/, $(STD_OUTS)/, $(patsubst %.cpp, %.opp, $(SRC_PLUS_PATH)))
 
-MY_NAME = my_container
-STL_NAME = stl_container
+FT_NAME = ft_container
+STD_NAME = std_container
 
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98 -g #-O3 -fsanitize=address
 
-all : $(MY_NAME) $(STL_NAME)
+all : $(FT_NAME) $(STD_NAME)
 
-$(MY_NAME): $(MY_OUT)
-	@echo "$(_PURPLE)Linking $(MY_NAME)$(_COLOR_RESET)"
-	@$(CC) $(CFLAGS) $(MY_OUT) -o $(MY_NAME) $(INCLUDES)
+$(FT_NAME): $(FT_OUT)
+	@echo "$(_PURPLE)Linking $(FT_NAME)$(_COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(FT_OUT) -o $(FT_NAME) $(INCLUDES)
 	@echo "$(_GREEN)DONE$(_COLOR_RESET)"
 
-$(STL_NAME): $(STL_OUT)
-	@echo "$(_PURPLE)Linking $(STL_NAME)$(_COLOR_RESET)"
-	@$(CC) $(CFLAGS) $(STL_OUT) -o $(STL_NAME) $(INCLUDES)
+$(STD_NAME): $(STD_OUT)
+	@echo "$(_PURPLE)Linking $(STD_NAME)$(_COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(STD_OUT) -o $(STD_NAME) $(INCLUDES)
 	@echo "$(_GREEN)DONE$(_COLOR_RESET)"
 
-$(MY_OUT): $(MY_OUTS)/%.opp : $(SRC_DIR)/%.cpp
+$(FT_OUT): $(FT_OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@echo "$(_CYAN)Compiling $(basename $(notdir $*.opp)) $(_COLOR_RESET)"
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
-$(STL_OUT): $(STL_OUTS)/%.opp : $(SRC_DIR)/%.cpp
+$(STD_OUT): $(STD_OUTS)/%.opp : $(SRC_DIR)/%.cpp
 	@echo "$(_CYAN)Compiling $(basename $(notdir $*.opp)) $(_COLOR_RESET)"
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -D STD -c $< -o $@ $(INCLUDES)
 
 re: fclean
-	@make $(MY_NAME)
-	@make $(STL_NAME)
+	@make $(FT_NAME)
+	@make $(STD_NAME)
 
 fclean: clean
 	@echo "$(_RED)Cleaning output files$(_COLOR_RESET)"
-	@rm -rf $(MY_NAME)
-	@rm -rf $(STL_NAME)
+	@rm -rf $(FT_NAME)
+	@rm -rf $(STD_NAME)
 
 clean:
 	@echo "$(_RED)Cleaning object files$(_COLOR_RESET)"
-	@rm -rf $(MY_OUTS)
-	@rm -rf $(STL_OUTS)
+	@rm -rf $(FT_OUTS)
+	@rm -rf $(STD_OUTS)
 	
 .PHONY: clean fclean re all

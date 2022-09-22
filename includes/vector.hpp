@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/22 10:13:46 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:21:06 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,8 +259,8 @@ namespace ft {
 				if (count > this->max_size())
 					throw std::exception();
 				size_type loc = &(*pos) - this->first;
-				if (this->size() + count >= this->capacity())
-					this->reserve(this->size() + count);
+				if (this->capacity() - this->size() < count)
+					this->reserve(this->size() + std::max(this->size(), count));
 				for (pointer it = this->last + count - 1; it && it != this->first + loc + count - 1; it--)
 					*it = *(it - count);
 				for (size_type i = 0; i < count; i++)

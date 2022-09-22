@@ -5,6 +5,6 @@ main
 *.dSYM
 container
 a.out
-my_container
-stl_container
+ft_container
+std_container
 set.hpp

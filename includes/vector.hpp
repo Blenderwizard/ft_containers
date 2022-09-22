@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/22 18:13:52 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:20:27 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,6 +365,8 @@ namespace ft {
 				}
 				else
 					this->insert(this->end(), count - this->size(), val);
+				if (count != this->size())
+					this->last = this->first + count;
 			}
 
 			inline void swap(vector & other) {

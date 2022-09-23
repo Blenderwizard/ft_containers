@@ -6,7 +6,7 @@
 /*   By: jrathelo <student.42nice.fr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 14:33:09 by jrathelo          #+#    #+#             */
-/*   Updated: 2022/09/22 10:47:13 by jrathelo         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:32:10 by jrathelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,10 @@ namespace ft {
 
 	template <typename T_RAI1, typename T_RAI2> inline typename ft::random_access_iterator<T_RAI1>::difference_type operator+(const ft::random_access_iterator<T_RAI1> & rai1, const ft::random_access_iterator<T_RAI2> & rai2) {
 		return (rai1.base() + rai2.base());
+	}
+
+	template <typename T> inline ft::random_access_iterator<T> operator-(typename ft::random_access_iterator<T>::difference_type count, typename ft::random_access_iterator<T> & rai) {
+		return (count - &(*rai));
 	}
 
 	template <typename T> inline typename ft::random_access_iterator<T>::difference_type operator-(const ft::random_access_iterator<T> & rai1, const ft::random_access_iterator<T> & rai2) {

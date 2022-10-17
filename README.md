@@ -2,6 +2,11 @@
     ft_containers: By <a href="https://github.com/Blenderwizard">Jolan "Blenderwizard" Rathelot</a>
 </h1>
 
+<p align="center">
+	<img src="readme_assets/made-with-c++.svg"/>
+	<img src="readme_assets/success-100_100.svg"/>
+</p>
+
 ## What is this ?
 
 ft_containers is a project from the 42 common core. The goal is to reimplement the c++ stl containers `vector`, `map` and `stack`. These implementations must function similarly to the original containers and can not be more than 20 times slower.
